@@ -161,9 +161,20 @@ public class Game
   private void drawTurnInfo()
   {
     textSize(64);
-    if(bigTurn < 10)
-      text("Turn 0" + bigTurn + "/" + gameDuration, 1110, 50);
-    else text("Turn " + bigTurn + "/" + gameDuration, 1110, 50);
+    if(gameDuration < 100) {
+      if(bigTurn < 10)
+        text("Turn 0" + bigTurn + "/" + gameDuration, 1110, 50);
+      else text("Turn " + bigTurn + "/" + gameDuration, 1110, 50);
+    }
+    else {
+      if(bigTurn < 10)
+        text("Turn 00" + bigTurn + "/" + gameDuration, 1045, 50);
+      else if (bigTurn < 100) {
+        text("Turn 0" + bigTurn + "/" + gameDuration, 1045, 50);
+      }
+      else text("Turn " + bigTurn + "/" + gameDuration, 1045, 50);
+    }
+    
     
     image(loadSquareImage(players[turn] + "", 50), 675, 235);
   }

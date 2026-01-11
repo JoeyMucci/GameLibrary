@@ -140,9 +140,10 @@ public void mousePressed()
         if(mouseX >= -125 + 250 * i && mouseX <= 25 + 250 * i)
         {
           screen = 0;
-          gameDuration = i * 10;
+          int[] turnCounts = {1, 2, 3, 5, 10};
+          gameDuration = turnCounts[i - 1] * 10;
           for(int j = 0; j < 4; j++)
-            for(int k = 0; k < i; k++)
+            for(int k = 0; k < turnCounts[i - 1]; k++)
               rui.getPlayers()[j].changeGems(true);
         }
   }
