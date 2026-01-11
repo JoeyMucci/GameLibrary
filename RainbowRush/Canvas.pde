@@ -22,6 +22,7 @@ public class Canvas
   
   private void drawWelcome()
   {
+    int[] turns = {1, 2, 3, 5, 10};
     PImage title = loadImage("RainbowRush.jpg");
     title.resize(840, 540);
     image(title, 280, 0);
@@ -30,12 +31,14 @@ public class Canvas
     ellipse(25, 25, 50, 50);
     for(int i = 0; i < 5; i++)
     {
-      Integer p = i + 1;
-      String pos = p.toString();
+      String pos = turns[i] + "";
       fill(GREY);
       rect(125 + 250 * i, 680, 150, 100);
       fill(WHITE);
-      text(pos + "0", 170 + 250 * i, 750);
+      if(i == 4) {
+        text(pos + "0", 156 + 250 * i, 750);
+      }
+      else text(pos + "0", 170 + 250 * i, 750);
     }
       
     fill(WHITE);
@@ -89,10 +92,10 @@ public class Canvas
       line(0, 200 + i * 200, 1400, 200 + i * 200);
     fill(NEON);
     textSize(32);
-    text("Name: Spongebob\nHails from: Bikini Bottom\nTalents: Flipping Krabby Patties, Catching jellyfish\nFriends: Patrick, Squidward, Sandy", 210, 30);
-    text("Name: Kirby\nHails from: Planet Popstar\nTalents: Inhaling, Cooking\nFriends: Waddle Dee, Meta Knight, King Dedede", 210, 230);
-    text("Name: Gumball\nHails from: Elmore, California\nTalents: Scheming, Comedy\nFriends: Darwin, Penny, Tobias", 210, 430);
-    text("Name: Cuphead\nHails from: Inkwell Isle\nTalents: Dodging, Casino games\nFriends: Mugman, Miss Chalice, Elder Kettle", 210, 630);
+    text("Name: Spongebob\nHails from: Bikini Bottom\nTalents: Flipping Krabby Patties, Catching jellyfish\nFriends: Patrick, Squidward, Sandy", 210, 55);
+    text("Name: Kirby\nHails from: Planet Popstar\nTalents: Inhaling, Cooking\nFriends: Waddle Dee, Meta Knight, King Dedede", 210, 255);
+    text("Name: Gumball\nHails from: Elmore, California\nTalents: Scheming, Comedy\nFriends: Darwin, Penny, Tobias", 210, 455);
+    text("Name: Cuphead\nHails from: Inkwell Isle\nTalents: Dodging, Casino games\nFriends: Mugman, Miss Chalice, Elder Kettle", 210, 655);
     drawBack(1000, 350);
   }
   
@@ -103,9 +106,9 @@ public class Canvas
     text("The objective of Rainbow Rush is to have the most \npots         at the end of a set amount of turns. Silver \ncoins       are used as a tiebreaker. "+
     "Gems       do not \ncount towards placement, but they can be used to \nenhance the effect of a positive space or negate the \neffect of a negative space. "+
     "Each turn a number from \n1 to 10 can be rolled.", 5, 100);
-    image(loadSquareImage("pot", 70), 145, 145);
-    image(loadSquareImage("silverCoin", 70), 155, 253);
-    image(loadSquareImage("gem", 70), 1054, 248);
+    image(loadSquareImage("pot", 50), 155, 130);
+    image(loadSquareImage("silverCoin", 50), 163, 210);
+    image(loadSquareImage("gem", 50), 1063, 210);
     drawBack(820, 640);
   }
   
@@ -115,9 +118,9 @@ public class Canvas
     textSize(64);
     text("Pass a       to buy a pot for 20 silver coins. Pass a       to \nsteal a gem from someone for 5 silver coins. "+
     "Pass a \n       to buy an item. Passing a landmark does not \ncount as a space moved.", 5, 100);
-    image(loadSquareImage("pot", 70), 178, 39);
-    image(loadSquareImage("gem", 70), 1253, 39); 
-    image(loadSquareImage("shop", 70), 10, 244);
+    image(loadSquareImage("pot", 50), 188, 54);
+    image(loadSquareImage("gem", 50), 1263, 54); 
+    image(loadSquareImage("shop", 50), 20, 207);
     drawBack(550, 550);
   }
   
@@ -132,13 +135,13 @@ public class Canvas
     image(loadSquareImage("blueMagician", 100), 0, 450);
     image(loadSquareImage("indigoThief", 100), 0, 550);
     image(loadSquareImage("violetMushroom", 100), 0, 650);
-    text("Red Mushroom: Add 3 to next roll", 110, 120);
+    text("Red Mushroom: Add 5 to next roll", 110, 120);
     text("Orange Magician: Pick next roll", 110, 220);
-    text("Yellow Mushroom: Add 5 to next roll", 110, 320);
+    text("Yellow Mushroom: Add 7 to next roll", 110, 320);
     text("Green Thief: Steal silver coins from an opponent", 110, 420);
     text("Blue Magician: Swap spots with an opponent", 110, 520);
     text("Indigo Thief: Steal item from an opponent", 110, 620);
-    text("Violet Mushroom: Take 2 from an opponent roll", 110, 720);
+    text("Violet Mushroom: Take 3 from an opponent roll", 110, 720);
     drawBack(1050, 100);
   }
   
