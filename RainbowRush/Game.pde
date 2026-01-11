@@ -129,11 +129,33 @@ public class Game
       
       if(players[i].getSlotOne().getType() != 0)
       {
-        image(loadSquareImage(players[i].getSlotOne() + "", 50), 50, 200 * i);
+        image(loadSquareImage(toCamelCase(players[i].getSlotOne().toString()) + "", 50), 50, 200 * i);
         if(players[i].getSlotTwo().getType() != 0)
-          image(loadSquareImage(players[i].getSlotTwo() + "", 50), 100, 200 * i);
+          image(loadSquareImage(toCamelCase(players[i].getSlotTwo().toString()) + "", 50), 100, 200 * i);
       }
     }
+  }
+
+  private String toCamelCase(String spaced) 
+  {
+    String result = "";
+    boolean caps = false;
+    for(int i = 0; i < spaced.length(); i++) {
+      if(spaced.charAt(i) != ' ') {
+        if(caps) {
+          result += ("" + spaced.charAt(i)).toUpperCase();
+          caps = false;
+        }
+        else {
+          result += spaced.charAt(i);
+        }
+      }
+      else {
+        caps = true;
+      }
+    }
+
+    return result;
   }
   
   private void drawTurnInfo()
@@ -150,7 +172,7 @@ public class Game
   {
     if(getCurrentPlayer().getSlotOne().getType() != 0)
     {
-      image(loadSquareImage(getCurrentPlayer().getSlotOne() + "", 100), 1200, 200);
+      image(loadSquareImage(toCamelCase(getCurrentPlayer().getSlotOne().toString()) + "", 100), 1200, 200);
       noFill();
       stroke(WHITE);
       rect(1200, 200, 100, 100);
@@ -158,7 +180,7 @@ public class Game
     }
     if(getCurrentPlayer().getSlotTwo().getType() != 0)
     {
-      image(loadSquareImage(getCurrentPlayer().getSlotTwo() + "", 100), 1200, 500);
+      image(loadSquareImage(toCamelCase(getCurrentPlayer().getSlotTwo().toString()) + "", 100), 1200, 500);
       noFill();
       stroke(WHITE);
       rect(1200, 500, 100, 100);
@@ -269,7 +291,7 @@ public class Game
     
     for(int i = 0; i < 3; i++)
     {
-      image(loadSquareImage(items[i] + "", 100), 1200, 150 + 200 * i);
+      image(loadSquareImage(toCamelCase(items[i] + ""), 100), 1200, 150 + 200 * i);
       rect(1200, 150 + 200 * i, 100, 100);
     }   
     

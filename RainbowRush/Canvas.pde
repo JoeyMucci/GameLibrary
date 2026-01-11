@@ -125,13 +125,13 @@ public class Canvas
   {
     fill(NEON);
     textSize(64);
-    image(loadSquareImage("red mushroom", 100), 0, 50);
-    image(loadSquareImage("orange magician", 100), 0, 150);
-    image(loadSquareImage("yellow mushroom", 100), 0, 250);
-    image(loadSquareImage("green thief", 100), 0, 350);
-    image(loadSquareImage("blue magician", 100), 0, 450);
-    image(loadSquareImage("indigo thief", 100), 0, 550);
-    image(loadSquareImage("violet mushroom", 100), 0, 650);
+    image(loadSquareImage("redMushroom", 100), 0, 50);
+    image(loadSquareImage("orangeMagician", 100), 0, 150);
+    image(loadSquareImage("yellowMushroom", 100), 0, 250);
+    image(loadSquareImage("greenThief", 100), 0, 350);
+    image(loadSquareImage("blueMagician", 100), 0, 450);
+    image(loadSquareImage("indigoThief", 100), 0, 550);
+    image(loadSquareImage("violetMushroom", 100), 0, 650);
     text("Red Mushroom: Add 3 to next roll", 110, 120);
     text("Orange Magician: Pick next roll", 110, 220);
     text("Yellow Mushroom: Add 5 to next roll", 110, 320);

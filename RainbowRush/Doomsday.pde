@@ -10,7 +10,7 @@ public class Doomsday extends Minigame
     try
     {
       words = new ArrayList<String>();
-      File dictionary = new File("C:\\Users\\jmucc\\OneDrive\\Documents\\Processing\\RainbowRush\\data\\words.txt");
+      File dictionary = new File("RainbowRush/data/words.txt");
       Scanner dicReader = new Scanner(dictionary);
       while(dicReader.hasNextLine())
         words.add(dicReader.nextLine().toLowerCase());
@@ -18,7 +18,7 @@ public class Doomsday extends Minigame
     }
     catch(FileNotFoundException e)
     {
-      
+      System.exit(1);
     }
     
     wordBalls = new ArrayList<Float>();

@@ -26,8 +26,6 @@ public void settings()
 
 private void initializeMinigame()
 {  
-  System.out.println(banned);
-  
   int random = (int) random(5) + 1;
   
   while(random == banned)
@@ -44,8 +42,6 @@ private void initializeMinigame()
   else if(random == 4)
     mg = new Doomsday();  
   else mg = new Marksman();
-  
-  System.out.println(banned);
 }
 
 public void draw()

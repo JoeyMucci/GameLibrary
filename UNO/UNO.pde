@@ -310,7 +310,7 @@ public class Card
   public void drawSelf(float topLeftX, float topLeftY, boolean faceUp)
   {
     pic.resize(100,  150);
-    backOfCard = parent.loadImage("BackOfCard.png");
+    backOfCard = parent.loadImage("backOfCard.png");
     backOfCard.resize(100,  150);
   
     if(faceUp)
@@ -494,9 +494,9 @@ public class UI
   {
     changeBackground();
     parent.background(backred, backgreen, backblue);
-    dg = parent.loadImage("finaldonaldglover.png");
-    gc = parent.loadImage("highgnomechild.png");
-    lgo = parent.loadImage("UnoLogo.png");
+    dg = parent.loadImage("finalDonaldGlover.png");
+    gc = parent.loadImage("highGnomeChild.png");
+    lgo = parent.loadImage("unoLogo.png");
     parent.image(dg, 0, 0, 466.67, 800);
     parent.image(gc, 933.33, 0, 466.67, 800);
     parent.image(lgo, 466.67, 0, 466.66, 533.33);
@@ -597,7 +597,7 @@ public class UI
     parent.background(1, 50, 32);
     one.drawHands();
     one.drawMiddleCards();
-    sideOfDonald = parent.loadImage("Donald'sSide.png");
+    sideOfDonald = parent.loadImage("donaldsSide.png");
     sideOfGnome = parent.loadImage("gnome.png");
     
     if(isGnome)

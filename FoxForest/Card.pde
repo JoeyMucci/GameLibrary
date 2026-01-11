@@ -13,7 +13,7 @@ class Card
   // Draws the card given the coordinates of the MIDDLE of the card and the angle at which it should be rotated (clockwise)
   public void drawSelf(float x, float y, float angle)
   {
-    PImage art = loadImage("images\\" + this + ".png");
+    PImage art = loadImage("data/" + this + ".png");
     if(suit == OTHER && value != 3) // reference cards on the rules page are larger
       art.resize(CARDWIDTH * 3 / 2, CARDHEIGHT * 3 / 2);
     else art.resize(CARDWIDTH, CARDHEIGHT);
