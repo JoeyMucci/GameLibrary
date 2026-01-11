@@ -147,7 +147,7 @@ public class Player implements Comparable<Player>
     resetSpacesLeft();
     if(spacesLeft == 0)
       narration.add(this + " can't move!");
-    else if(spacesLeft == 8)
+    else if(spacesLeft == 8 || spacesLeft == 11 || spacesLeft == 18) 
       narration.add(this + " rolled an " + spacesLeft);
     else narration.add(this + " rolled a " + spacesLeft);
   }
