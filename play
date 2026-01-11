@@ -1,9 +1,11 @@
 #!/bin/bash
 if [ -n "$1" ]; then
-    echo "HIHI"
     game=$1
     processing cli --sketch="$game" --run
 else 
+    echo "----- GAME LIBRARY -----"
+    echo "To launch a game directly run \"$0 <game>\""
+    echo "--- Menu ---"
     PS3="Choose Game: "
     games=("CaptainToadTowerClimb" "UNO" "RainbowRush" "FoxForest")
     select game in ${games[@]}; do
