@@ -5,10 +5,10 @@ public class ToTheCore extends Screen {
     }
 
     public void drawSelf() {
-        backgroundColor(LIGHT_ABG);
+        background(LIGHT_ABG);
         PFont ubuntuBold = createFont(FONTS_DIR + "Ubuntu-Bold.ttf", LARGE_FONT_SIZE);
         textFont(ubuntuBold);
-        fillColor(ORANGE);
+        fill(ORANGE);
         centerText("To The Core", 400);
     }
 
