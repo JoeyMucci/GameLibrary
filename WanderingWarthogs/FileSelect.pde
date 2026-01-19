@@ -5,9 +5,9 @@ public class FileSelect extends Screen {
     public Coordinate[] slotLocs = new Coordinate[NUM_SLOTS];
 
     public FileSelect() {
+        float y = (HEIGHT - LARGE_FONT_SIZE - SLOT_SIZE) / 2 + LARGE_FONT_SIZE;
         for(int i = 0; i < NUM_SLOTS; i++) {
             float x = SLOT_GAP  + (SLOT_SIZE + SLOT_GAP) * i;
-            float y = (HEIGHT - LARGE_FONT_SIZE - SLOT_SIZE) / 2 + LARGE_FONT_SIZE;
             slotLocs[i] = new Coordinate(x, y);
         }
     }
@@ -34,7 +34,7 @@ public class FileSelect extends Screen {
         else {
             strokeWeight(DEFAULT_STROKE);
         }
-        
+
         rect(x, y, SLOT_SIZE, SLOT_SIZE);
         fillColor(DARK_ABG);
         PFont ubuntuMedium = createFont(FONTS_DIR + "Ubuntu-Medium.ttf", MED_FONT_SIZE);
