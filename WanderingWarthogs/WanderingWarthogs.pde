@@ -4,7 +4,7 @@ import static java.util.Map.entry;
 
 // Constants
 public final int WIDTH = 1600, HEIGHT = 900;
-public final int LARGE_FONT_SIZE = 128, MED_FONT_SIZE = 64;
+public final int LARGE_FONT_SIZE = 128, MED_FONT_SIZE = 64, SMALL_FONT_SIZE = 32;
 public final int DEFAULT_STROKE = 2, THICK_STROKE = 8;
 
 public final color ORANGE = #E95420, LIGHT_ABG = #77216F, DARK_ABG = #2C001E, GRAY = #AEA79F;
@@ -13,14 +13,19 @@ public final String MAIN_DIR = "WanderingWarthogs/";
 public final String FONTS_DIR = MAIN_DIR + "fonts/";
 
 enum ScreenID {
-    FILE_SELECT, LEVEL_SELECT, LEVEL1, LEVEL2, LEVEL3, LEVEL4, LEVEL5
+    FILE_SELECT, LEVEL_SELECT, TTS, TTC, LEVEL3, LEVEL4, LEVEL5
 }
 
 // Game
 public ScreenID currentScreen = ScreenID.FILE_SELECT;
 Map<ScreenID, Screen> screens = Map.ofEntries(
     entry(ScreenID.FILE_SELECT, new FileSelect()),
-    entry(ScreenID.LEVEL_SELECT, new LevelSelect())
+    entry(ScreenID.LEVEL_SELECT, new LevelSelect()),
+    entry(ScreenID.TTS, new TheTechStack()),
+    entry(ScreenID.TTC, new ToTheCore()),
+    entry(ScreenID.LEVEL3, new Level3()),
+    entry(ScreenID.LEVEL4, new Level4()),
+    entry(ScreenID.LEVEL5, new Level5())
 );
 
 public void settings() {
@@ -47,6 +52,16 @@ public class Coordinate {
     public Coordinate(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+}
+
+public class LevelInfo {
+    public ScreenID id;
+    public String name;
+
+    public LevelInfo(ScreenID id, String name) {
+        this.id = id;
+        this.name = name;
     }
 }
 
