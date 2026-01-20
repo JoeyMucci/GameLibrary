@@ -11,6 +11,7 @@ public final color ORANGE = #E95420, LIGHT_ABG = #77216F, DARK_ABG = #2C001E, GR
 
 public final String MAIN_DIR = "WanderingWarthogs/";
 public final String FONTS_DIR = MAIN_DIR + "fonts/";
+public final String SPRITES_DIR = MAIN_DIR + "sprites/";
 
 enum ScreenID {
     FILE_SELECT, LEVEL_SELECT, TTS, TTC, LEVEL3, LEVEL4, LEVEL5
@@ -18,7 +19,17 @@ enum ScreenID {
 
 // Game
 public ScreenID currentScreen = ScreenID.FILE_SELECT;
-Map<ScreenID, Screen> screens = Map.ofEntries(
+public Map<String, SpriteInfo> sprites = Map.ofEntries(
+    entry("quokka-left.png", new SpriteInfo(null, 50, 75)),
+    entry("quokka-left-action.png", new SpriteInfo(null, 50, 75)),
+    entry("quokka-right.png", new SpriteInfo(null, 50, 75)),
+    entry("quokka-right-action.png", new SpriteInfo(null, 50, 75)),
+    entry("raccoon-left.png", new SpriteInfo(null, 50, 75)),
+    entry("raccoon-left-action.png", new SpriteInfo(null, 50, 75)),
+    entry("raccoon-right.png", new SpriteInfo(null, 50, 75)),
+    entry("raccoon-right-action.png", new SpriteInfo(null, 50, 75))
+);
+public Map<ScreenID, Screen> screens = Map.ofEntries(
     entry(ScreenID.FILE_SELECT, new FileSelect()),
     entry(ScreenID.LEVEL_SELECT, new LevelSelect()),
     entry(ScreenID.TTS, new TheTechStack()),
@@ -35,6 +46,8 @@ public void settings() {
 public void setup() {
     stroke(DARK_ABG);
     strokeWeight(DEFAULT_STROKE);
+    loadSprites();
+    mouseX = WIDTH / 2;
 }
 
 public void draw() {
@@ -43,6 +56,13 @@ public void draw() {
 
 public void mouseClicked() {
     currentScreen = screens.get(currentScreen).processClick();
+}
+
+public void loadSprites() {
+    for(String key : sprites.keySet()) {
+        SpriteInfo val = sprites.get(key);
+        val.image = loadImage(SPRITES_DIR + key);
+    }
 }
 
 // Utilities
@@ -55,13 +75,14 @@ public class Coordinate {
     }
 }
 
-public class LevelInfo {
-    public ScreenID id;
-    public String name;
+public class SpriteInfo {
+    public PImage image;
+    public float width, height;
 
-    public LevelInfo(ScreenID id, String name) {
-        this.id = id;
-        this.name = name;
+    public SpriteInfo(PImage image, float width, float height) {
+        this.image = image;
+        this.width = width;
+        this.height = height;
     }
 }
 
@@ -73,14 +94,6 @@ public void centerText(String text, float left, float right, float height) {
     float textWidth = textWidth(text);
     float wholeWidth = right - left;
     text(text, left + (wholeWidth - textWidth) / 2, height);
-}
-
-public void fillColor(color c) {
-    fill(extractRed(c), extractGreen(c), extractBlue(c));
-}
-
-public void backgroundColor(color c) {
-    background(extractRed(c), extractGreen(c), extractBlue(c));   
 }
 
 public int extractRed(color c) {

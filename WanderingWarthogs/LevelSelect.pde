@@ -15,6 +15,10 @@ public class LevelSelect extends Screen {
     };
 
     public LevelSelect() {
+        assignLevels();
+    }
+
+    public void assignLevels() {
         assert NUM_LEVELS == LEVEL_INFO.length;
         float topy = VERTICAL_GAP;
         float bottomy = VERTICAL_GAP * 2 + SLOT_SIZE;
@@ -38,7 +42,7 @@ public class LevelSelect extends Screen {
     }
 
     public void levelSlot(String name, float x, float y) {
-        fillColor(GRAY);
+        fill(GRAY);
 
         // Draw thicker outline on highlighted level slots
         if(mouseInRect(x, y, SLOT_SIZE, SLOT_SIZE)) {
@@ -49,7 +53,7 @@ public class LevelSelect extends Screen {
         }
         
         rect(x, y, SLOT_SIZE, SLOT_SIZE);
-        fillColor(DARK_ABG);
+        fill(DARK_ABG);
         PFont ubuntuLight = createFont(FONTS_DIR + "Ubuntu-Light.ttf", SMALL_FONT_SIZE);
         textFont(ubuntuLight);
         centerText(name, x, x + SLOT_SIZE, y + SMALL_FONT_SIZE);
@@ -62,5 +66,15 @@ public class LevelSelect extends Screen {
             }
         }
         return ScreenID.LEVEL_SELECT;
+    }
+}
+
+public class LevelInfo {
+    public ScreenID id;
+    public String name;
+
+    public LevelInfo(ScreenID id, String name) {
+        this.id = id;
+        this.name = name;
     }
 }
