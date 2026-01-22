@@ -4,6 +4,7 @@ import static java.util.Map.entry;
 
 // Constants
 public final int WIDTH = 1600, HEIGHT = 900;
+public final int BLOCK_SIZE = 50;
 public final int LARGE_FONT_SIZE = 128, MED_FONT_SIZE = 64, SMALL_FONT_SIZE = 32;
 public final int DEFAULT_STROKE = 2, THICK_STROKE = 8;
 
@@ -20,14 +21,17 @@ enum ScreenID {
 // Game
 public ScreenID currentScreen = ScreenID.FILE_SELECT;
 public Map<String, SpriteInfo> sprites = Map.ofEntries(
-    entry("quokka-left.png", new SpriteInfo(null, 50, 75)),
-    entry("quokka-left-action.png", new SpriteInfo(null, 50, 75)),
-    entry("quokka-right.png", new SpriteInfo(null, 50, 75)),
-    entry("quokka-right-action.png", new SpriteInfo(null, 50, 75)),
-    entry("raccoon-left.png", new SpriteInfo(null, 50, 75)),
-    entry("raccoon-left-action.png", new SpriteInfo(null, 50, 75)),
-    entry("raccoon-right.png", new SpriteInfo(null, 50, 75)),
-    entry("raccoon-right-action.png", new SpriteInfo(null, 50, 75))
+    entry("quokka-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
+    entry("quokka-left-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
+    entry("quokka-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
+    entry("quokka-right-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
+    entry("raccoon-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
+    entry("raccoon-left-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
+    entry("raccoon-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
+    entry("raccoon-right-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
+    entry("questing-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2)),
+    entry("resolute-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2)),
+    entry("canonical-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2))
 );
 public Map<ScreenID, Screen> screens = Map.ofEntries(
     entry(ScreenID.FILE_SELECT, new FileSelect()),

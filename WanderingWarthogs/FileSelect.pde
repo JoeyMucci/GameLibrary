@@ -20,19 +20,19 @@ public class FileSelect extends Screen {
         ),
         new FrozenSprite(
             "quokka-left.png", 
-            "placeholder", 
+            "Watch out for bugs crawling around the walls", 
             Align.START, 
             Align.END
         ),
         new FrozenSprite(
             "quokka-left.png", 
-            "placeholder", 
+            "Reach the terminals to complete the level and save your progress", 
             Align.MID, 
             Align.END
         ),
         new FrozenSprite(
-            "quokka-left.png", 
-            "placeholder", 
+            "canonical-chip.png", 
+            "Collect computer chips along the way to prove your mettle", 
             Align.END, 
             Align.END
         ),
