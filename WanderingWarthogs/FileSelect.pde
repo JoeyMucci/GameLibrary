@@ -13,19 +13,19 @@ public class FileSelect extends Screen {
             Align.START
         ),
         new FrozenSprite(
-            "quokka-right-action.png", 
-            "Smile as the Questing Quokka with the S key, attracting nearby humans", 
+            "human-right.png", 
+            "Attract nearby humans as the Questing Quokka with the S key",
             Align.START, 
             Align.MID
         ),
         new FrozenSprite(
-            "quokka-left.png", 
+            "bug-0.png", 
             "Watch out for bugs crawling around the walls", 
             Align.START, 
             Align.END
         ),
         new FrozenSprite(
-            "quokka-left.png", 
+            "terminal.png", 
             "Reach the terminals to complete the level and save your progress", 
             Align.MID, 
             Align.END
@@ -37,8 +37,8 @@ public class FileSelect extends Screen {
             Align.END
         ),
         new FrozenSprite(
-            "raccoon-left-action.png", 
-            "Search as the Resolute Raccoon with the down arrow key, finding useful items from trash cans", 
+            "trash.png", 
+            "Find useful items from trash cans as the Resolute Raccoon with the down arrow key",
             Align.END, 
             Align.MID
         ),
@@ -103,13 +103,9 @@ public class FileSelect extends Screen {
 
     public void drawSelf() {
         background(LIGHT_ABG);
-        PFont ubuntuBold = createFont(FONTS_DIR + "Ubuntu-Bold.ttf", LARGE_FONT_SIZE);
-        textFont(ubuntuBold);
-        fill(ORANGE);
+        setText(Size.LARGE, ORANGE);
         centerText("Wandering Warthogs", LARGE_FONT_SIZE);
-        PFont ubuntuLight = createFont(FONTS_DIR + "Ubuntu-Light.ttf", SMALL_FONT_SIZE);
-        textFont(ubuntuLight);
-        fill(GRAY);
+        setText(Size.SMALL, GRAY);
         centerText(subtitle, LARGE_FONT_SIZE + SMALL_FONT_SIZE * 2);
 
         for(int i = 0; i < NUM_SLOTS; i++) {
@@ -136,8 +132,6 @@ public class FileSelect extends Screen {
     }
 
     public void fileSlot(int fileNo, float x, float y) {
-        fill(GRAY);
-
         // Draw thicker outline on highlighted file slots
         if(mouseInRect(x, y, SLOT_SIZE, SLOT_SIZE)) {
             strokeWeight(THICK_STROKE);
@@ -145,11 +139,9 @@ public class FileSelect extends Screen {
         else {
             strokeWeight(DEFAULT_STROKE);
         }
-
+        fill(GRAY);
         rect(x, y, SLOT_SIZE, SLOT_SIZE);
-        fill(DARK_ABG);
-        PFont ubuntuMedium = createFont(FONTS_DIR + "Ubuntu-Medium.ttf", MED_FONT_SIZE);
-        textFont(ubuntuMedium);
+        setText(Size.MED, DARK_ABG);
         centerText("File " + fileNo, x, x + SLOT_SIZE, y + MED_FONT_SIZE);
     }
 
@@ -175,8 +167,4 @@ public class FrozenSprite {
         this.xAlign = xAlign;
         this.yAlign = yAlign;
     }
-}
-
-enum Align {
-    START, MID, END
 }

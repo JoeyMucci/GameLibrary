@@ -18,6 +18,14 @@ enum ScreenID {
     FILE_SELECT, LEVEL_SELECT, TTS, TTC, LEVEL3, LEVEL4, LEVEL5
 }
 
+enum Size {
+    LARGE, MED, SMALL
+}
+
+enum Align {
+    START, MID, END
+}
+
 // Game
 public ScreenID currentScreen = ScreenID.FILE_SELECT;
 public Map<String, SpriteInfo> sprites = Map.ofEntries(
@@ -31,7 +39,17 @@ public Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("raccoon-right-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
     entry("questing-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2)),
     entry("resolute-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2)),
-    entry("canonical-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2))
+    entry("canonical-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2)),
+    entry("human-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
+    entry("human-left-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
+    entry("human-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
+    entry("human-right-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
+    entry("trash.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
+    entry("bug-0.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-90.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-180.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-270.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("terminal.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE))
 );
 public Map<ScreenID, Screen> screens = Map.ofEntries(
     entry(ScreenID.FILE_SELECT, new FileSelect()),
@@ -90,7 +108,21 @@ public class SpriteInfo {
     }
 }
 
-public void centerText(String text, int height) {
+public void backButton(float x, float y, float width, float height) {
+    // Draw thicker outline if highlighted
+    if(mouseInRect(x, y, width, height)) {
+        strokeWeight(THICK_STROKE);
+    }
+    else {
+        strokeWeight(DEFAULT_STROKE);
+    }
+    fill(GRAY);
+    rect(x, y, width, height);
+    setText(Size.SMALL, DARK_ABG);
+    centerText("Back", x, x + width, y + SMALL_FONT_SIZE);
+}
+
+public void centerText(String text, float height) {
     centerText(text, 0, WIDTH, height);
 }
 
@@ -98,6 +130,25 @@ public void centerText(String text, float left, float right, float height) {
     float textWidth = textWidth(text);
     float wholeWidth = right - left;
     text(text, left + (wholeWidth - textWidth) / 2, height);
+}
+
+public void setText(Size sz, color c) {
+    fill(c);
+    switch(sz) {
+    case LARGE:
+        PFont ubuntuBold = createFont(FONTS_DIR + "Ubuntu-Bold.ttf", LARGE_FONT_SIZE);
+        textFont(ubuntuBold);
+        break;
+    case MED:
+        PFont ubuntuMedium = createFont(FONTS_DIR + "Ubuntu-Medium.ttf", MED_FONT_SIZE);
+        textFont(ubuntuMedium);
+        break;
+    case SMALL:
+        PFont ubuntuLight = createFont(FONTS_DIR + "Ubuntu-Light.ttf", SMALL_FONT_SIZE);
+        textFont(ubuntuLight);
+        break;
+    default:
+    }
 }
 
 public int extractRed(color c) {
