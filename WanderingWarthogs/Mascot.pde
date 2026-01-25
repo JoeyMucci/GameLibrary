@@ -1,13 +1,13 @@
 public abstract class Mascot {
-    private final float XSPEED = 5, JUMPSPEED = 10, GRAVITY = 1.0 / 3.0;
-    public float ySpeed = 0;
+    private final float XSPEED = 5, JUMPSPEED = 9, GRAVITY = 1.0 / 3.0;
+    public float  xSpeed, ySpeed;
 
     public Coordinate location;
     public boolean facingRight, doingAction, isAirborne;
 
     protected int leftKey, rightKey, jumpKey, actionKey;
     protected String species;
-    protected PImage sprite;
+    public String spriteName;
 
     protected Mascot(float x, float y, boolean facingRight) {
         this.location = new Coordinate(x, y);
@@ -17,19 +17,22 @@ public abstract class Mascot {
     }
 
     public void drawSelf() {
-        image(sprite, location.x, location.y);
+        image(sprites.get(spriteName).image, location.x, location.y);
     }
 
     public void moveSelf() {
         // Going left
         if(isKeyPressed(leftKey) && !isKeyPressed(rightKey)) {
-            location.x -= XSPEED;   
+            xSpeed = -XSPEED;   
             facingRight = false;
         }
         // Going right
         else if(isKeyPressed(rightKey) && !isKeyPressed(leftKey)) {
-            location.x += XSPEED;
+            xSpeed = XSPEED;
             facingRight = true;
+        }
+        else {
+            xSpeed = 0;
         }
 
         // Initiate jump
@@ -43,8 +46,6 @@ public abstract class Mascot {
             ySpeed += GRAVITY;
         }
 
-        location.y += ySpeed;
-
         // Update action status
         if(!isAirborne && isKeyPressed(actionKey)) {
             doingAction = true;
@@ -53,6 +54,12 @@ public abstract class Mascot {
             doingAction = false;
         }
 
+        // Assume that gravity acts on the mascots
+        isAirborne = true;
+
+        location.x += xSpeed;
+        location.y += ySpeed;
+        
         setSprite();
     }
 
@@ -70,7 +77,7 @@ public abstract class Mascot {
         }
 
         spriteName += ".png";
-        sprite =  sprites.get(spriteName).image;
+        this.spriteName = spriteName;
     }
 
 }

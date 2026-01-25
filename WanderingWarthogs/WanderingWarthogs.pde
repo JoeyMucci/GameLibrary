@@ -14,6 +14,8 @@ public final String MAIN_DIR = "WanderingWarthogs/";
 public final String FONTS_DIR = MAIN_DIR + "fonts/";
 public final String SPRITES_DIR = MAIN_DIR + "sprites/";
 
+public final float contactThreshold = 0.01;
+
 enum ScreenID {
     FILE_SELECT, LEVEL_SELECT, TTS, TTC, LEVEL3, LEVEL4, LEVEL5
 }
