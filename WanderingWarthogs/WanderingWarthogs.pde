@@ -27,7 +27,8 @@ enum Align {
 }
 
 // Game
-public ScreenID currentScreen = ScreenID.FILE_SELECT;
+public ScreenID currentScreen = ScreenID.TTS;
+public Map<Integer, Boolean> keyMap = new HashMap<>();
 public Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("quokka-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
     entry("quokka-left-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
@@ -80,6 +81,24 @@ public void mouseClicked() {
     currentScreen = screens.get(currentScreen).processClick();
 }
 
+public void keyPressed() {
+    if(key == CODED) {
+        keyMap.put(keyCode, true);
+    }
+    keyMap.put((int) key, true);
+}
+
+public void keyReleased() {
+    if(key == CODED) {
+        keyMap.remove(keyCode);
+    }
+    keyMap.remove((int) key);
+}
+
+public boolean isKeyPressed(int ch) {
+    return keyMap.get(ch) != null;
+}
+
 public void loadSprites() {
     for(String key : sprites.keySet()) {
         SpriteInfo val = sprites.get(key);
@@ -106,6 +125,11 @@ public class SpriteInfo {
         this.width = width;
         this.height = height;
     }
+}
+
+public interface Interactable {
+    public void drawSelf();
+    public void interact(Quokka questing, Raccoon resolute);
 }
 
 public void backButton(float x, float y, float width, float height) {
