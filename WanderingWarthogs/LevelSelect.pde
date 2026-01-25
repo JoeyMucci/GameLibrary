@@ -1,13 +1,13 @@
 public class LevelSelect extends Screen {
-    public final int NUM_LEVELS = 5;
-    public final int TOP_LEVELS = (NUM_LEVELS + 1) / 2, BOTTOM_LEVELS = NUM_LEVELS / 2;
-    public final float SLOT_SIZE = 300;
-    public final float TOP_GAP = (WIDTH - TOP_LEVELS * SLOT_SIZE) / (TOP_LEVELS + 1);
-    public final float BOTTOM_GAP = (WIDTH - BOTTOM_LEVELS * SLOT_SIZE) / (BOTTOM_LEVELS + 1);
-    public final float VERTICAL_GAP = (HEIGHT - (2 * SLOT_SIZE)) / (2 + 1);
-    public final float backX = 10, backY = 10, backW = 150, backH = 50;
-    public Coordinate[] slotLocs = new Coordinate[NUM_LEVELS];
-    public final LevelInfo[] LEVEL_INFO = {
+    private final int NUM_LEVELS = 5;
+    private final int TOP_LEVELS = (NUM_LEVELS + 1) / 2, BOTTOM_LEVELS = NUM_LEVELS / 2;
+    private final float SLOT_SIZE = 300;
+    private final float TOP_GAP = (WIDTH - TOP_LEVELS * SLOT_SIZE) / (TOP_LEVELS + 1);
+    private final float BOTTOM_GAP = (WIDTH - BOTTOM_LEVELS * SLOT_SIZE) / (BOTTOM_LEVELS + 1);
+    private final float VERTICAL_GAP = (HEIGHT - (2 * SLOT_SIZE)) / (2 + 1);
+    private final float backX = 10, backY = 10, backW = 150, backH = 50;
+    private Coordinate[] slotLocs = new Coordinate[NUM_LEVELS];
+    private final LevelInfo[] LEVEL_INFO = {
         new LevelInfo(ScreenID.TTS, "The Tech Stack"),
         new LevelInfo(ScreenID.TTC, "To the Core"),
         new LevelInfo(ScreenID.LEVEL3, "LEVEL3"),
@@ -19,7 +19,7 @@ public class LevelSelect extends Screen {
         assignLevels();
     }
 
-    public void assignLevels() {
+    private void assignLevels() {
         assert NUM_LEVELS == LEVEL_INFO.length;
         float topy = VERTICAL_GAP;
         float bottomy = VERTICAL_GAP * 2 + SLOT_SIZE;
@@ -43,7 +43,7 @@ public class LevelSelect extends Screen {
         backButton(backX, backY, backW, backH);
     }
 
-    public void levelSlot(String name, float x, float y) {
+    private void levelSlot(String name, float x, float y) {
         // Draw thicker outline on highlighted level slots
         if(mouseInRect(x, y, SLOT_SIZE, SLOT_SIZE)) {
             strokeWeight(THICK_STROKE);
@@ -70,7 +70,7 @@ public class LevelSelect extends Screen {
     }
 }
 
-public class LevelInfo {
+private class LevelInfo {
     public ScreenID id;
     public String name;
 

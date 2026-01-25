@@ -1,11 +1,11 @@
 public class FileSelect extends Screen {
-    public final int NUM_SLOTS = 3;
-    public final float SLOT_SIZE = 400;
-    public final float SLOT_GAP = (WIDTH - NUM_SLOTS * SLOT_SIZE) / (NUM_SLOTS + 1);
-    public Coordinate[] slotLocs = new Coordinate[NUM_SLOTS];
+    private final int NUM_SLOTS = 3;
+    private final float SLOT_SIZE = 400;
+    private final float SLOT_GAP = (WIDTH - NUM_SLOTS * SLOT_SIZE) / (NUM_SLOTS + 1);
+    private Coordinate[] slotLocs = new Coordinate[NUM_SLOTS];
 
-    public final int NUM_SPRITES = 7;
-    public final FrozenSprite[] SPRITE_INFO = {
+    private final int NUM_SPRITES = 7;
+    private final FrozenSprite[] SPRITE_INFO = {
         new FrozenSprite(
             "quokka-right.png",
             "Move the Questing Quokka with the WAD keys",
@@ -49,17 +49,17 @@ public class FileSelect extends Screen {
             Align.START
         )
     };
-    public Coordinate[] spriteLocs = new Coordinate[NUM_SPRITES];
+    private Coordinate[] spriteLocs = new Coordinate[NUM_SPRITES];
 
-    public final String HELP_SUBTITLE = "Hover over a sprite for tips on how to play";
-    public String subtitle = HELP_SUBTITLE;
+    private final String HELP_SUBTITLE = "Hover over a sprite for tips on how to play";
+    private String subtitle = HELP_SUBTITLE;
 
     public FileSelect() {
         assignSlots();
         assignSprites();
     }
 
-    public void assignSlots() {
+    private void assignSlots() {
         float y = (HEIGHT - LARGE_FONT_SIZE - SLOT_SIZE) / 2 + LARGE_FONT_SIZE;
         for(int i = 0; i < NUM_SLOTS; i++) {
             float x = SLOT_GAP  + (SLOT_SIZE + SLOT_GAP) * i;
@@ -67,7 +67,7 @@ public class FileSelect extends Screen {
         }
     }
 
-    public void assignSprites() {
+    private void assignSprites() {
         assert NUM_SPRITES == SPRITE_INFO.length;
         for(int i = 0; i < NUM_SPRITES; i++) {
             float x, y;
@@ -131,7 +131,7 @@ public class FileSelect extends Screen {
         }
     }
 
-    public void fileSlot(int fileNo, float x, float y) {
+    private void fileSlot(int fileNo, float x, float y) {
         // Draw thicker outline on highlighted file slots
         if(mouseInRect(x, y, SLOT_SIZE, SLOT_SIZE)) {
             strokeWeight(THICK_STROKE);
@@ -156,7 +156,7 @@ public class FileSelect extends Screen {
     }
 }
 
-public class FrozenSprite {
+private class FrozenSprite {
     public String spriteName;
     public String description;
     public Align xAlign, yAlign;
