@@ -1,44 +1,24 @@
-public abstract class Mascot {
+public class Mascot extends Mover {
     private final float XSPEED = 5, JUMPSPEED = 9, GRAVITY = 1.0 / 3.0;
-    public float  xSpeed, ySpeed;
+    private MovementKeys keys;
+    private boolean canJump;
 
-    public Coordinate location;
-    public boolean facingRight, doingAction, isAirborne;
-
-    protected int leftKey, rightKey, jumpKey, actionKey;
-    protected String species;
-    public String spriteName;
-
-    protected Mascot(float x, float y, boolean facingRight) {
-        this.location = new Coordinate(x, y);
-        this.facingRight = facingRight;
-        doingAction = false;
-        isAirborne = false;
-    }
-
-    public void drawSelf() {
-        image(sprites.get(spriteName).image, location.x, location.y);
+    public Mascot(MoverID id, int rightBlock, int bottomBlock, boolean facingRight) {
+        super(id, rightBlock, bottomBlock, facingRight);
+        keys = mascotKeys.get(id);
+        canJump = true;
     }
 
     public void moveSelf() {
-        // Going left
-        if(isKeyPressed(leftKey) && !isKeyPressed(rightKey)) {
-            xSpeed = -XSPEED;   
-            facingRight = false;
-        }
-        // Going right
-        else if(isKeyPressed(rightKey) && !isKeyPressed(leftKey)) {
-            xSpeed = XSPEED;
-            facingRight = true;
-        }
-        else {
-            xSpeed = 0;
+        // Initiate jump
+        if(canJump && !isAirborne && isKeyPressed(keys.jump)) {
+            ySpeed -= JUMPSPEED;
+            canJump = false;
         }
 
-        // Initiate jump
-        if(!isAirborne && isKeyPressed(jumpKey)) {
-            isAirborne = true;
-            ySpeed -= JUMPSPEED;
+        // Have to release jump while on the ground to be able to jump again
+        if(!isAirborne && !isKeyPressed(keys.jump)) {
+            canJump = true;
         }
         
         // Gravity
@@ -46,12 +26,23 @@ public abstract class Mascot {
             ySpeed += GRAVITY;
         }
 
-        // Update action status
-        if(!isAirborne && isKeyPressed(actionKey)) {
-            doingAction = true;
+        doingAction = false;
+        // Going left
+        if(isKeyPressed(keys.left) && !isKeyPressed(keys.right)) {
+            xSpeed = -XSPEED;   
+            facingRight = false;
+        }
+        // Going right
+        else if(isKeyPressed(keys.right) && !isKeyPressed(keys.left)) {
+            xSpeed = XSPEED;
+            facingRight = true;
         }
         else {
-            doingAction = false;
+            xSpeed = 0;
+            // Update action status only if not moving
+            if(!isAirborne && isKeyPressed(keys.action)) {
+                doingAction = true;
+            }
         }
 
         // Assume that gravity acts on the mascots
@@ -59,25 +50,5 @@ public abstract class Mascot {
 
         location.x += xSpeed;
         location.y += ySpeed;
-        
-        setSprite();
     }
-
-    protected void setSprite() {
-        String spriteName = species;
-        if(facingRight) {
-            spriteName += "-" + "right";
-        }
-        else {
-            spriteName += "-" + "left";
-        }
-
-        if(doingAction) {
-            spriteName += "-" + "action";
-        }
-
-        spriteName += ".png";
-        this.spriteName = spriteName;
-    }
-
 }

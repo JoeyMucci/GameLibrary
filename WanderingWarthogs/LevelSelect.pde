@@ -8,11 +8,11 @@ public class LevelSelect extends Screen {
     private final float backX = 10, backY = 10, backW = 150, backH = 50;
     private Coordinate[] slotLocs = new Coordinate[NUM_LEVELS];
     private final LevelInfo[] LEVEL_INFO = {
-        new LevelInfo(ScreenID.TTS, "The Tech Stack"),
-        new LevelInfo(ScreenID.TTC, "To the Core"),
-        new LevelInfo(ScreenID.LEVEL3, "LEVEL3"),
-        new LevelInfo(ScreenID.LEVEL4, "LEVEL4"),
-        new LevelInfo(ScreenID.LEVEL5, "LEVEL5")
+        levels.get(ScreenID.TTS),
+        levels.get(ScreenID.TTC),
+        levels.get(ScreenID.LEVEL3),
+        levels.get(ScreenID.LEVEL4),
+        levels.get(ScreenID.LEVEL5)
     };
 
     public LevelSelect() {
@@ -67,15 +67,5 @@ public class LevelSelect extends Screen {
             return ScreenID.FILE_SELECT;
         }
         return ScreenID.LEVEL_SELECT;
-    }
-}
-
-private class LevelInfo {
-    public ScreenID id;
-    public String name;
-
-    public LevelInfo(ScreenID id, String name) {
-        this.id = id;
-        this.name = name;
     }
 }
