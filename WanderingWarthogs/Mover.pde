@@ -1,7 +1,7 @@
 public abstract class Mover {
     protected float  xSpeed, ySpeed;
     protected Coordinate location = new Coordinate(0, 0);
-    protected boolean facingRight, doingAction, isAirborne, jumpHeld;
+    protected boolean facingRight, doingAction, isAirborne;
 
     private MoverID id;
     private String spriteName;
@@ -11,7 +11,6 @@ public abstract class Mover {
         this.facingRight = facingRight;
         doingAction = false;
         isAirborne = false;
-        jumpHeld = false;
         setSpriteName(id);
         setRightX((rightBlock + 1) * BLOCK_SIZE);
         setBottomY((bottomBlock + 1) * BLOCK_SIZE);

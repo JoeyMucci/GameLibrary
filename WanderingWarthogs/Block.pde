@@ -19,6 +19,14 @@ public class Block implements Interactable {
         }
     }
 
+    public Coordinate getTopLeft() {
+        return new Coordinate(blockLeft * BLOCK_SIZE, blockTop * BLOCK_SIZE);
+    }
+
+    public Coordinate getBottomRight() {
+        return new Coordinate((blockRight + 1) * BLOCK_SIZE, (blockBottom + 1) * BLOCK_SIZE);
+    }
+
     public void interact(Mover[] movers) {
         Coordinate blockTopLeft = new Coordinate(blockLeft * BLOCK_SIZE, blockTop * BLOCK_SIZE);
         Coordinate blockBottomRight = new Coordinate((blockRight + 1) * BLOCK_SIZE, (blockBottom + 1) * BLOCK_SIZE);

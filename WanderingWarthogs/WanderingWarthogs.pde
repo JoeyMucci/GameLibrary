@@ -256,6 +256,8 @@ public class MovementKeys {
 
 public interface Interactable {
     public void drawSelf();
+    public Coordinate getTopLeft();
+    public Coordinate getBottomRight();
     public void interact(Mover[] movers);
 }
 
