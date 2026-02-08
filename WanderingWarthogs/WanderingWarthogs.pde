@@ -1,4 +1,6 @@
 // Imports
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import static java.util.Map.entry; 
 
@@ -74,11 +76,11 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
         new LevelInfo(
             ScreenID.TTS,
             "The Tech Stack",
-            new Mover[] {
+            new ArrayList<Mascot>(Arrays.asList(
                 new Mascot(MoverID.QUOKKA, 10, 15, true),
                 new Mascot(MoverID.RACCOON, 20, 15, false)
-            },
-            new Interactable[] {
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
                 new Block(0, 31, 16, 17),
                 new Block(0, 31, 0, 1),
                 new Block(0, 1, 0, 17),
@@ -93,7 +95,8 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Block(7, 13, 6, 6),
                 new Block(18, 29, 6, 6),
                 new Block(4, 4, 4, 4)
-            }
+            )),
+            new ArrayList<Interactable>()
         )
     ),
     entry(
@@ -101,10 +104,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
         new LevelInfo(
             ScreenID.TTC,
             "To the Core",
-            new Mover[] {
-            },
-            new Interactable[] {
-            }
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
         )
     ),
     entry(
@@ -112,10 +114,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
         new LevelInfo(
             ScreenID.LEVEL3,
             "Level 3",
-            new Mover[] {
-            },
-            new Interactable[] {
-            }
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
         )
     ),
     entry(
@@ -123,10 +124,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
         new LevelInfo(
             ScreenID.LEVEL4,
             "Level 4",
-            new Mover[] {
-            },
-            new Interactable[] {
-            }
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
         )
     ),
     entry(
@@ -134,10 +134,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
         new LevelInfo(
             ScreenID.LEVEL5,
             "Level 5",
-            new Mover[] {
-            },
-            new Interactable[] {
-            }
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
         )
     )
 );
@@ -232,14 +231,21 @@ public class SpriteInfo {
 public class LevelInfo {
     public ScreenID id;
     public String name;
-    public Mover[] movers;
-    public Interactable[] obstacles;
+    public ArrayList<Mascot> mascots;
+    public ArrayList<Collidable> collidables;
+    public ArrayList<Interactable> interactables;
 
-    public LevelInfo(ScreenID id, String name, Mover[] movers, Interactable[] obstacles) {
+    public LevelInfo(
+        ScreenID id, String name,
+        ArrayList<Mascot> mascots,
+        ArrayList<Collidable> collidables,
+        ArrayList<Interactable> interactables
+    ) {
         this.id = id;
         this.name = name;
-        this.movers = movers;
-        this.obstacles = obstacles;
+        this.mascots = mascots;
+        this.collidables = collidables;
+        this.interactables = interactables;
     }
 }
 
@@ -254,11 +260,15 @@ public class MovementKeys {
     }
 }
 
-public interface Interactable {
+public interface Collidable {
     public void drawSelf();
     public Coordinate getTopLeft();
     public Coordinate getBottomRight();
-    public void interact(Mover[] movers);
+}
+
+public interface Interactable {
+    public void drawSelf();
+    public void interact(ArrayList<Mascot> mascots);
 }
 
 public void backButton(float x, float y, float width, float height) {

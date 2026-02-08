@@ -1,4 +1,4 @@
-public abstract class Mover {
+public abstract class Mover implements Collidable {
     protected float  xSpeed, ySpeed;
     protected Coordinate location = new Coordinate(0, 0);
     protected boolean facingRight, doingAction, isAirborne;
@@ -68,6 +68,65 @@ public abstract class Mover {
     public void setBottomY(float y) {
         location.y = y - sprites.get(spriteName).height;
         ySpeed = 0;
+    }
+
+    public void collideX(ArrayList<Collidable> collidables) {
+        for(Collidable collidable : collidables) {
+            Coordinate collidableTopLeft = collidable.getTopLeft();
+            Coordinate collidableBottomRight = collidable.getBottomRight();
+
+            // If not too low and not too high
+            if(
+                getTopLeft().y < collidableBottomRight.y &&
+                getBottomRight().y > collidableTopLeft.y
+            ) {
+                // Left into collidable
+                if(
+                    getPrevTopLeft().x >= collidableBottomRight.x &&
+                    getTopLeft().x <= collidableBottomRight.x
+                ) {
+                    setLeftX(collidableBottomRight.x);
+                }
+
+                // Right into collidable
+                if(
+                    getPrevBottomRight().x <= collidableTopLeft.x &&
+                    getBottomRight().x >= collidableTopLeft.x
+                ) {
+                    setRightX(collidableTopLeft.x);
+                }
+            }
+        }
+    }
+
+    public void collideY(ArrayList<Collidable> collidables) {
+        for(Collidable collidable : collidables) {
+            Coordinate collidableTopLeft = collidable.getTopLeft();
+            Coordinate collidableBottomRight = collidable.getBottomRight();
+
+            // If not too far left and not too far right
+            if(
+                getTopLeft().x < collidableBottomRight.x &&
+                getBottomRight().x > collidableTopLeft.x
+            ) {
+                // Jumping into collidable
+                if(
+                    getPrevTopLeft().y >= collidableBottomRight.y &&
+                    getTopLeft().y <= collidableBottomRight.y
+                ) {
+                    setTopY(collidableBottomRight.y);
+                }
+
+                // Falling onto collidable
+                if(
+                    getPrevBottomRight().y <= collidableTopLeft.y &&
+                    getBottomRight().y >= collidableTopLeft.y
+                ) {
+                    setBottomY(collidableTopLeft.y);
+                    ground();
+                }
+            }
+        }
     }
 
     private void setSpriteName(MoverID id) {

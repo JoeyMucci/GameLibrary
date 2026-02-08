@@ -1,14 +1,31 @@
 public class Level extends Screen {
     private ScreenID id;
     // private String name; We will want to use this later for pause/death screen
-    private Mover[] movers;
-    private Interactable[] obstacles;
+    private ArrayList<Mascot> mascots;
+    private ArrayList<Mover> movers;
+    private ArrayList<Collidable> collidables;
+    private ArrayList<Interactable> interactables;
     
     public Level(LevelInfo levelInfo) {
         this.id = levelInfo.id;
         // this.name = levelInfo.name;
-        this.movers = levelInfo.movers;
-        this.obstacles = levelInfo.obstacles;
+        this.mascots = levelInfo.mascots;
+        this.movers = new ArrayList<Mover>();
+        this.collidables = levelInfo.collidables;
+        this.interactables = levelInfo.interactables;
+
+        for(int i = 0; i < this.mascots.size(); i++) {
+            this.movers.add((Mover) this.mascots.get(i));
+        }
+
+        for(int i = 0; i < this.interactables.size(); i++) {
+            if(this.interactables.get(i) instanceof Mover) {
+                this.movers.add((Mover) this.interactables.get(i));
+            }
+            else if(this.interactables.get(i) instanceof Collidable) {
+                this.collidables.add((Collidable) this.interactables.get(i));
+            }
+        }
     }
 
     public void drawSelf() {
@@ -23,75 +40,33 @@ public class Level extends Screen {
         for(Mover mover : movers) {
             mover.moveSelf();
 
-            // Need to do all x collisions before any y collisions
-            for(Interactable obstacle : obstacles) {
-                collideX(mover, obstacle.getTopLeft(), obstacle.getBottomRight());
-            }
-            for(Interactable obstacle : obstacles) {
-                collideY(mover, obstacle.getTopLeft(), obstacle.getBottomRight());
+            // Mascots can collide with non mascots
+            ArrayList<Collidable> myCollidables = collidables;
+            for(Mover otherMover : movers) {
+                if(mover instanceof Mascot && !(otherMover instanceof Mascot)) {
+                    myCollidables.add(otherMover);
+                }
             }
 
-
+            mover.collideX(myCollidables);
+            mover.collideY(myCollidables);
+        }
+        for(Interactable interactable : interactables) {
+            interactable.interact(mascots);
+        }
+        for(Mover mover : movers) {
             mover.drawSelf();
         }
-        
-        for(Interactable obstacle : obstacles) {
-            obstacle.drawSelf();
+        for(Collidable collidable : collidables) {
+            collidable.drawSelf();
         }
-
+        for(Interactable interactable : interactables) {
+            interactable.drawSelf();
+        }
     }
 
     public ScreenID processClick() {
         // TODO: will have to process pause and back functionality
         return id;
-    }
-
-    private void collideX(Mover mover, Coordinate obstacleTopLeft, Coordinate obstacleBottomRight) {
-        // If not too low and not too high
-        if(
-            mover.getTopLeft().y < obstacleBottomRight.y &&
-            mover.getBottomRight().y > obstacleTopLeft.y
-        ) {
-            // Left into obstacle
-            if(
-                mover.getPrevTopLeft().x >= obstacleBottomRight.x &&
-                mover.getTopLeft().x <= obstacleBottomRight.x
-            ) {
-                mover.setLeftX(obstacleBottomRight.x);
-            }
-
-            // Right into obstacle
-            if(
-                mover.getPrevBottomRight().x <= obstacleTopLeft.x &&
-                mover.getBottomRight().x >= obstacleTopLeft.x
-            ) {
-                mover.setRightX(obstacleTopLeft.x);
-            }
-        }
-    }
-
-    private void collideY(Mover mover, Coordinate obstacleTopLeft, Coordinate obstacleBottomRight) {
-        // If not too far left and not too far right
-        if(
-            mover.getTopLeft().x < obstacleBottomRight.x &&
-            mover.getBottomRight().x > obstacleTopLeft.x
-        ) {
-            // Jumping into obstacle
-            if(
-                mover.getPrevTopLeft().y >= obstacleBottomRight.y &&
-                mover.getTopLeft().y <= obstacleBottomRight.y
-            ) {
-                mover.setTopY(obstacleBottomRight.y);
-            }
-
-            // Falling onto obstacle
-            if(
-                mover.getPrevBottomRight().y <= obstacleTopLeft.y &&
-                mover.getBottomRight().y >= obstacleTopLeft.y
-            ) {
-                mover.setBottomY(obstacleTopLeft.y);
-                mover.ground();
-            }
-        }
     }
 }
