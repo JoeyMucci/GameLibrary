@@ -40,16 +40,19 @@ public class Level extends Screen {
         for(Mover mover : movers) {
             mover.moveSelf();
 
-            // Mascots can collide with non mascots
-            ArrayList<Collidable> myCollidables = collidables;
             for(Mover otherMover : movers) {
-                if(mover instanceof Mascot && !(otherMover instanceof Mascot)) {
-                    myCollidables.add(otherMover);
+                if((mover instanceof Mascot) != (otherMover instanceof Mascot)) {
+                    ArrayList<Collidable> otherCollidable = new ArrayList<Collidable>(Arrays.asList(otherMover));
+                    mover.collideX(otherCollidable);
                 }
             }
+            mover.collideX(collidables);
+            for(Mover otherMover : movers) {
+                ArrayList<Collidable> otherCollidable = new ArrayList<Collidable>(Arrays.asList(otherMover));
+                mover.collideY(otherCollidable);
+            }
 
-            mover.collideX(myCollidables);
-            mover.collideY(myCollidables);
+            mover.collideY(collidables);
         }
         for(Interactable interactable : interactables) {
             interactable.interact(mascots);

@@ -1,5 +1,5 @@
 public class Mascot extends Mover {
-    private final float XSPEED = 5, JUMPSPEED = 9, GRAVITY = 1.0 / 3.0;
+    private final float XSPEED = 5, JUMPSPEED = 9;
     private MovementKeys keys;
     private boolean canJump;
 

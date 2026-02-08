@@ -1,10 +1,10 @@
 public abstract class Mover implements Collidable {
+    public MoverID id;
+    protected String spriteName;
+
     protected float  xSpeed, ySpeed;
     protected Coordinate location = new Coordinate(0, 0);
     protected boolean facingRight, doingAction, isAirborne;
-
-    private MoverID id;
-    private String spriteName;
 
     public Mover(MoverID id, int rightBlock, int bottomBlock, boolean facingRight) {
         this.id = id;
@@ -27,8 +27,18 @@ public abstract class Mover implements Collidable {
         isAirborne = false;
     }
 
+    public boolean isFacingRight() {
+        return facingRight;
+    }
+
     public boolean isDoingAction() {
         return doingAction;
+    }
+
+    public Coordinate getMidPoint() {
+        float midX = location.x + sprites.get(spriteName).width / 2;
+        float midY = location.y + sprites.get(spriteName).height / 2;
+        return new Coordinate(midX, midY);
     }
 
     public Coordinate getTopLeft() {

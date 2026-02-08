@@ -17,6 +17,7 @@ public final String FONTS_DIR = MAIN_DIR + "fonts/";
 public final String SPRITES_DIR = MAIN_DIR + "sprites/";
 
 public final float CONTACT_THRESHOLD = 0.01;
+public final float GRAVITY = 1.0 / 3.0;
 
 enum ScreenID {
     FILE_SELECT, LEVEL_SELECT, TTS, TTC, LEVEL3, LEVEL4, LEVEL5
@@ -96,7 +97,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Block(18, 29, 6, 6),
                 new Block(4, 4, 4, 4)
             )),
-            new ArrayList<Interactable>()
+            new ArrayList<Interactable>(Arrays.asList(
+                new Human(9, 10, true)
+            ))
         )
     ),
     entry(
