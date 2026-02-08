@@ -35,7 +35,7 @@ public class Human extends Mover implements Interactable {
                                 xSpeed = XSPEED;
                             }
                             else {
-                                xSpeed = XSPEED;
+                                xSpeed = -XSPEED;
                             }
                         }
                     }
