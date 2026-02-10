@@ -39,7 +39,6 @@ public class Level extends Screen {
         
         for(Mover mover : movers) {
             mover.moveSelf();
-
             for(Mover otherMover : movers) {
                 if((mover instanceof Mascot) != (otherMover instanceof Mascot)) {
                     ArrayList<Collidable> otherCollidable = new ArrayList<Collidable>(Arrays.asList(otherMover));
@@ -48,10 +47,11 @@ public class Level extends Screen {
             }
             mover.collideX(collidables);
             for(Mover otherMover : movers) {
-                ArrayList<Collidable> otherCollidable = new ArrayList<Collidable>(Arrays.asList(otherMover));
-                mover.collideY(otherCollidable);
+                if((mover instanceof Mascot) != (otherMover instanceof Mascot) || otherMover.isGrounded()) {
+                    ArrayList<Collidable> otherCollidable = new ArrayList<Collidable>(Arrays.asList(otherMover));
+                    mover.collideY(otherCollidable);
+                }
             }
-
             mover.collideY(collidables);
         }
         for(Interactable interactable : interactables) {
