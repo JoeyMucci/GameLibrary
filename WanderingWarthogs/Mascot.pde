@@ -2,11 +2,25 @@ public class Mascot extends Mover {
     private final float XSPEED = 5, JUMPSPEED = 9;
     private MovementKeys keys;
     private boolean canJump;
+    private ArrayList<ItemID> items;
 
     public Mascot(MoverID id, int rightBlock, int bottomBlock, boolean facingRight) {
         super(id, rightBlock, bottomBlock, facingRight);
+        this.items = new ArrayList<ItemID>();
         keys = mascotKeys.get(id);
         canJump = true;
+    }
+
+    public void drawSelf() {
+        super.drawSelf();
+
+        // Draw items
+        for(ItemID itemId : items) {
+            String itemName = itemNames.get(itemId);
+            String dir = isFacingRight() ? "right" : "left";
+            String spriteName = itemName + "-" + dir + ".png"; 
+            image(sprites.get(spriteName).image, location.x, location.y);
+        }
     }
 
     public void moveSelf() {
@@ -50,5 +64,13 @@ public class Mascot extends Mover {
 
         location.x += xSpeed;
         location.y += ySpeed;
+    }
+
+    public void getItem(ItemID item) {
+        items.add(item);
+    }
+
+    public void removeItem(ItemID item) {
+        items.remove(item);
     }
 }

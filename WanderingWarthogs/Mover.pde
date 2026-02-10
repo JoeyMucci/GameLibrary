@@ -1,5 +1,5 @@
 public abstract class Mover implements Collidable {
-    public MoverID id;
+    protected MoverID id;
     protected String spriteName;
 
     protected float  xSpeed, ySpeed;
@@ -33,6 +33,10 @@ public abstract class Mover implements Collidable {
 
     public boolean isDoingAction() {
         return doingAction;
+    }
+
+    public boolean isGrounded() {
+        return !isAirborne;
     }
 
     public Coordinate getMidPoint() {

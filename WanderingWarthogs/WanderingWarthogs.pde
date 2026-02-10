@@ -27,6 +27,10 @@ enum MoverID {
     QUOKKA, RACCOON, HUMAN;
 }
 
+enum ItemID {
+    REDKEY, BLUEKEY, BOOTS, MAGNET;
+}
+
 enum Size {
     LARGE, MED, SMALL
 }
@@ -43,6 +47,12 @@ public final Map<MoverID, String> moverNames = Map.ofEntries(
 public Map<MoverID, MovementKeys> mascotKeys = Map.ofEntries(
     entry(MoverID.QUOKKA, new MovementKeys('a', 'd', 'w', 's')),
     entry(MoverID.RACCOON, new MovementKeys(LEFT, RIGHT, UP, DOWN))
+);
+public Map<ItemID, String> itemNames = Map.ofEntries(
+    entry(ItemID.REDKEY, "redkey"),
+    entry(ItemID.BLUEKEY, "bluekey"),
+    entry(ItemID.BOOTS, "boots"),
+    entry(ItemID.MAGNET, "magnet")
 );
 public final Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("quokka-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
@@ -65,7 +75,9 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("bug-90.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
     entry("bug-180.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
     entry("bug-270.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
-    entry("terminal.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE))
+    entry("terminal.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("magnet-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("magnet-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5))
 );
 
 // Game
@@ -86,8 +98,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Block(0, 31, 0, 1),
                 new Block(0, 1, 0, 17),
                 new Block(30, 31, 0, 17),
-                new Block(25, 29, 15, 15),
-                new Block(26, 28, 14, 14),
+                new Block(25, 25, 15, 15),
+                new Block(27, 29, 15, 15),
+                new Block(27, 28, 14, 14),
                 new Block(27, 27, 13, 13),
                 new Block(2, 13, 11, 11),
                 new Block(18, 24, 11, 11),
@@ -98,7 +111,8 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Block(4, 4, 4, 4)
             )),
             new ArrayList<Interactable>(Arrays.asList(
-                new Human(9, 10, true)
+                new Human(9, 10, true),
+                new Trash(ItemID.MAGNET, 26, 15)
             ))
         )
     ),
