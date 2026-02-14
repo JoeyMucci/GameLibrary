@@ -19,6 +19,8 @@ public final String SPRITES_DIR = MAIN_DIR + "sprites/";
 public final float CONTACT_THRESHOLD = 0.01;
 public final float GRAVITY = 1.0 / 3.0;
 
+public final Coordinate OFFSCREEN = new Coordinate(-1000, -1000);
+
 enum ScreenID {
     FILE_SELECT, LEVEL_SELECT, TTS, TTC, LEVEL3, LEVEL4, LEVEL5
 }
@@ -49,8 +51,8 @@ public Map<MoverID, MovementKeys> mascotKeys = Map.ofEntries(
     entry(MoverID.RACCOON, new MovementKeys(LEFT, RIGHT, UP, DOWN))
 );
 public Map<ItemID, String> itemNames = Map.ofEntries(
-    entry(ItemID.REDKEY, "redkey"),
-    entry(ItemID.BLUEKEY, "bluekey"),
+    entry(ItemID.REDKEY, "key-red"),
+    entry(ItemID.BLUEKEY, "key-blue"),
     entry(ItemID.BOOTS, "boots"),
     entry(ItemID.MAGNET, "magnet")
 );
@@ -76,6 +78,12 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("bug-180.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
     entry("bug-270.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
     entry("terminal.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("door-red.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
+    entry("door-blue.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
+    entry("key-red-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("key-red-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("key-blue-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("key-blue-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
     entry("magnet-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
     entry("magnet-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5))
 );
@@ -102,8 +110,6 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Block(27, 29, 15, 15),
                 new Block(27, 28, 14, 14),
                 new Block(27, 27, 13, 13),
-                new Block(2, 13, 11, 11),
-                new Block(18, 24, 11, 11),
                 new Block(4, 6, 10, 10),
                 new Block(4, 4, 8, 9),
                 new Block(7, 13, 6, 6),
@@ -111,8 +117,13 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Block(4, 4, 4, 4)
             )),
             new ArrayList<Interactable>(Arrays.asList(
+                new SteelBlock(2, 13, 11, 11),
+                new SteelBlock(18, 24, 11, 11),
+                new Door(16, 15, true),
                 new Human(9, 10, true),
-                new Trash(ItemID.MAGNET, 26, 15)
+                new Trash(ItemID.BLUEKEY, 4, 15),
+                new Trash(ItemID.MAGNET, 5, 15),
+                new Trash(ItemID.REDKEY, 26, 15)
             ))
         )
     ),
@@ -333,4 +344,49 @@ public void setText(Size sz, color c) {
 
 public boolean mouseInRect(float x, float y, float width, float height) {
     return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+}
+
+public boolean rightInto(Mover mover, Collidable collidable) {
+    return (
+        mover.getTopLeft().y < collidable.getBottomRight().y &&
+        mover.getBottomRight().y > collidable.getTopLeft().y &&
+        mover.getPrevBottomRight().x <= collidable.getTopLeft().x &&
+        mover.getBottomRight().x >= collidable.getTopLeft().x
+    );
+}
+
+public boolean leftInto(Mover mover, Collidable collidable) {
+    return (
+        mover.getTopLeft().y < collidable.getBottomRight().y &&
+        mover.getBottomRight().y > collidable.getTopLeft().y &&
+        mover.getPrevTopLeft().x >= collidable.getBottomRight().x &&
+        mover.getTopLeft().x <= collidable.getBottomRight().x
+    );
+}
+
+public boolean jumpingInto(Mover mover, Collidable collidable) {
+    return (
+        mover.getTopLeft().x < collidable.getBottomRight().x &&
+        mover.getBottomRight().x > collidable.getTopLeft().x &&
+        mover.getPrevTopLeft().y >= collidable.getBottomRight().y &&
+        mover.getTopLeft().y <= collidable.getBottomRight().y
+    );
+}
+
+public boolean jumpingInto(Mover mover, Collidable collidable, float xbuffer) {
+    return (
+        mover.getTopLeft().x + xbuffer < collidable.getBottomRight().x &&
+        mover.getBottomRight().x - xbuffer > collidable.getTopLeft().x &&
+        mover.getPrevTopLeft().y >= collidable.getBottomRight().y &&
+        mover.getTopLeft().y <= collidable.getBottomRight().y
+    );
+}
+
+public boolean fallingInto(Mover mover, Collidable collidable) {
+    return (
+        mover.getTopLeft().x < collidable.getBottomRight().x &&
+        mover.getBottomRight().x > collidable.getTopLeft().x &&
+        mover.getPrevBottomRight().y <= collidable.getTopLeft().y &&
+        mover.getBottomRight().y >= collidable.getTopLeft().y
+    );
 }

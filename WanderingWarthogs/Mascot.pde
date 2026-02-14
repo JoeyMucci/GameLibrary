@@ -1,7 +1,7 @@
 public class Mascot extends Mover {
-    private final float XSPEED = 5, JUMPSPEED = 9;
+    private final float XSPEED = 5, JUMPSPEED = 9, DISMOUNT_SPEED = 1;
     private MovementKeys keys;
-    private boolean canJump;
+    private boolean canJump, isMagnetized;
     private ArrayList<ItemID> items;
 
     public Mascot(MoverID id, int rightBlock, int bottomBlock, boolean facingRight) {
@@ -55,7 +55,15 @@ public class Mascot extends Mover {
             xSpeed = 0;
             // Update action status only if not moving
             if(!isAirborne && isKeyPressed(keys.action)) {
-                doingAction = true;
+                if(isMagnetized) {
+                    ySpeed = DISMOUNT_SPEED;
+                    isMagnetized = false;
+                }
+                else {
+                    if(!hasItem(ItemID.REDKEY) && !hasItem(ItemID.BLUEKEY)) {
+                        doingAction = true;
+                    }
+                }
             }
         }
 
@@ -72,5 +80,14 @@ public class Mascot extends Mover {
 
     public void removeItem(ItemID item) {
         items.remove(item);
+    }
+
+    public boolean hasItem(ItemID item) {
+        return items.contains(item);
+    }
+
+    public void magnetize() {
+        ground();
+        isMagnetized = true;
     }
 }
