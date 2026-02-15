@@ -28,9 +28,9 @@ public class Trash implements Collidable, Interactable {
     }
 
     // The resolute raccoon can dig while atop a trash can
-    public void interact(ArrayList<Mascot> mascots) {
+    public InteractCode interact(ArrayList<Mascot> mascots) {
         if(used) {
-            return;
+            return InteractCode.OK;
         }
         for(Mascot mascot : mascots) {
             if(mascot.id == MoverID.RACCOON && mascot.isGrounded()) {
@@ -45,5 +45,6 @@ public class Trash implements Collidable, Interactable {
                 }
             }
         }
+        return InteractCode.OK;
     }
 }

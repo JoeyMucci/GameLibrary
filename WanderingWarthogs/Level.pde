@@ -5,6 +5,8 @@ public class Level extends Screen {
     private ArrayList<Mover> movers;
     private ArrayList<Collidable> collidables;
     private ArrayList<Interactable> interactables;
+
+    private color bg;
     
     public Level(LevelInfo levelInfo) {
         this.id = levelInfo.id;
@@ -26,10 +28,13 @@ public class Level extends Screen {
                 this.collidables.add((Collidable) this.interactables.get(i));
             }
         }
+
+        bg = LIGHT_ABG;
     }
 
     public void drawSelf() {
-        background(LIGHT_ABG);
+        background(bg);
+        bg = LIGHT_ABG;
         for(int h = 0; h <= HEIGHT; h += BLOCK_SIZE) {
             line(0, h, WIDTH, h);
         }
@@ -40,14 +45,21 @@ public class Level extends Screen {
         for(Mover mover : movers) {
             mover.moveSelf();
             for(Mover otherMover : movers) {
-                if((mover instanceof Mascot) != (otherMover instanceof Mascot)) {
+                if(
+                    (mover instanceof Mascot && otherMover instanceof Human) ||
+                    (mover instanceof Human && otherMover instanceof Mascot)
+                ) {
                     ArrayList<Collidable> otherCollidable = new ArrayList<Collidable>(Arrays.asList(otherMover));
                     mover.collideX(otherCollidable);
                 }
             }
             mover.collideX(collidables);
             for(Mover otherMover : movers) {
-                if((mover instanceof Mascot) != (otherMover instanceof Mascot) || otherMover.isGrounded()) {
+                if(
+                    (mover instanceof Mascot && otherMover instanceof Human) ||
+                    (mover instanceof Human && otherMover instanceof Mascot) ||
+                    (mover instanceof Mascot && otherMover instanceof Mascot && otherMover.isGrounded()) // Mascot can land on a grounded mascot
+                ) { 
                     ArrayList<Collidable> otherCollidable = new ArrayList<Collidable>(Arrays.asList(otherMover));
                     mover.collideY(otherCollidable);
                 }
@@ -55,7 +67,10 @@ public class Level extends Screen {
             mover.collideY(collidables);
         }
         for(Interactable interactable : interactables) {
-            interactable.interact(mascots);
+            InteractCode intCode = interactable.interact(mascots);
+            if(intCode == InteractCode.HIT) {
+                bg = DARK_ABG;
+            }
         }
         for(Mover mover : movers) {
             mover.drawSelf();

@@ -2,8 +2,8 @@ public class Human extends Mover implements Interactable {
     private final float XSPEED = 7.5;
     private final float MIN_DIST = 1.5, MAX_DIST = 12;
 
-    public Human(int rightBlock, int bottomBlock, boolean facingRight) {
-        super(MoverID.HUMAN, rightBlock, bottomBlock, facingRight);
+    public Human(int rightBlock, int bottomBlock, Direction dir) {
+        super(MoverID.HUMAN, rightBlock, bottomBlock, dir);
     }
 
     public void moveSelf() {
@@ -20,8 +20,8 @@ public class Human extends Mover implements Interactable {
         location.y += ySpeed;
     }
 
-    // If the quesitng quokka is smiling, do action (run to quokka)
-    public void interact(ArrayList<Mascot> mascots) {
+    // If the questing quokka is smiling, do action (run to quokka)
+    public InteractCode interact(ArrayList<Mascot> mascots) {
         xSpeed = 0;
         doingAction = false;
         for(Mascot mascot : mascots) {
@@ -42,5 +42,6 @@ public class Human extends Mover implements Interactable {
                 }
             }
         }
+        return InteractCode.OK;
     }
 }

@@ -1,18 +1,18 @@
 public class Block implements Collidable {
-    protected int blockLeft, blockRight, blockTop, blockBottom;
+    protected int leftBlock, rightBlock, topBlock, bottomBlock;
 
-    public Block(int blockLeft, int blockRight, int blockTop, int blockBottom) {
-        this.blockLeft = blockLeft;
-        this.blockRight = blockRight;
-        this.blockTop = blockTop;
-        this.blockBottom = blockBottom;
+    public Block(int leftBlock, int rightBlock, int topBlock, int bottomBlock) {
+        this.leftBlock = leftBlock;
+        this.rightBlock = rightBlock;
+        this.topBlock = topBlock;
+        this.bottomBlock = bottomBlock;
     }
 
     public void drawSelf() {
         fill(GRAY);
-        for(int row = blockTop; row <= blockBottom; row++) {
+        for(int row = topBlock; row <= bottomBlock; row++) {
             int y = row * BLOCK_SIZE;
-            for(int col = blockLeft; col <= blockRight; col++) {
+            for(int col = leftBlock; col <= rightBlock; col++) {
                 int x = col * BLOCK_SIZE;
                 rect(x, y, BLOCK_SIZE, BLOCK_SIZE);
             }
@@ -20,11 +20,11 @@ public class Block implements Collidable {
     }
 
     public Coordinate getTopLeft() {
-        return new Coordinate(blockLeft * BLOCK_SIZE, blockTop * BLOCK_SIZE);
+        return new Coordinate(leftBlock * BLOCK_SIZE, topBlock * BLOCK_SIZE);
     }
 
     public Coordinate getBottomRight() {
-        return new Coordinate((blockRight + 1) * BLOCK_SIZE, (blockBottom + 1) * BLOCK_SIZE);
+        return new Coordinate((rightBlock + 1) * BLOCK_SIZE, (bottomBlock + 1) * BLOCK_SIZE);
     }
     
 }

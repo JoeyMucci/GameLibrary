@@ -19,7 +19,7 @@ public class FileSelect extends Screen {
             Align.MID
         ),
         new FrozenSprite(
-            "bug-0.png", 
+            "bug-right.png", 
             "Watch out for bugs crawling around the walls", 
             Align.START, 
             Align.END

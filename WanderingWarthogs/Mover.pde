@@ -4,11 +4,12 @@ public abstract class Mover implements Collidable {
 
     protected float  xSpeed, ySpeed;
     protected Coordinate location = new Coordinate(0, 0);
-    protected boolean facingRight, doingAction, isAirborne;
+    protected Direction dir;
+    protected boolean doingAction, isAirborne;
 
-    public Mover(MoverID id, int rightBlock, int bottomBlock, boolean facingRight) {
+    public Mover(MoverID id, int rightBlock, int bottomBlock, Direction dir) {
         this.id = id;
-        this.facingRight = facingRight;
+        this.dir = dir;
         doingAction = false;
         isAirborne = false;
         setSpriteName(id);
@@ -28,7 +29,7 @@ public abstract class Mover implements Collidable {
     }
 
     public boolean isFacingRight() {
-        return facingRight;
+        return dir == Direction.RIGHT;
     }
 
     public boolean isDoingAction() {
@@ -107,13 +108,31 @@ public abstract class Mover implements Collidable {
         }
     }
 
-    private void setSpriteName(MoverID id) {
+    public boolean isTouching(Mover other) {
+        return (
+            getTopLeft().x <= other.getBottomRight().x &&
+            getTopLeft().y <= other.getBottomRight().y &&
+            getBottomRight().x >= other.getTopLeft().x &&
+            getBottomRight().y >= other.getTopLeft().y
+        );
+    }
+
+    protected void setSpriteName(MoverID id) {
         String spriteName = moverNames.get(id);
-        if(facingRight) {            
-            spriteName += "-" + "right";
-        }
-        else {
-            spriteName += "-" + "left";
+        switch(dir) {
+        case LEFT:
+            spriteName += "-left";
+            break;
+        case RIGHT:
+            spriteName += "-right";
+            break;
+        case UP:
+            spriteName += "-up";
+            break;
+        case DOWN:
+            spriteName += "-down";
+            break;
+        default:
         }
 
         if(doingAction) {

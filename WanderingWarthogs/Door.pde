@@ -35,7 +35,7 @@ public class Door implements Collidable, Interactable {
     }
 
     // The resolute raccoon can stick to the bottom of steel blocks with magnet equipped
-    public void interact(ArrayList<Mascot> mascots) {
+    public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {
             if(mascot.id == MoverID.RACCOON && hasRightKey(mascot) && mascot.isGrounded()) {
                 if(leftInto(mascot, this) || rightInto(mascot, this)) {
@@ -44,5 +44,6 @@ public class Door implements Collidable, Interactable {
                 }
             }
         }
+        return InteractCode.OK;
     }
 }

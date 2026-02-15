@@ -26,11 +26,19 @@ enum ScreenID {
 }
 
 enum MoverID {
-    QUOKKA, RACCOON, HUMAN;
+    QUOKKA, RACCOON, HUMAN, BUG;
 }
 
 enum ItemID {
     REDKEY, BLUEKEY, BOOTS, MAGNET;
+}
+
+enum InteractCode {
+    OK, HIT
+}
+
+enum Direction {
+    LEFT, RIGHT, UP, DOWN
 }
 
 enum Size {
@@ -44,7 +52,8 @@ enum Align {
 public final Map<MoverID, String> moverNames = Map.ofEntries(
     entry(MoverID.QUOKKA, "quokka"),
     entry(MoverID.RACCOON, "raccoon"),
-    entry(MoverID.HUMAN, "human")
+    entry(MoverID.HUMAN, "human"),
+    entry(MoverID.BUG, "bug")
 );
 public Map<MoverID, MovementKeys> mascotKeys = Map.ofEntries(
     entry(MoverID.QUOKKA, new MovementKeys('a', 'd', 'w', 's')),
@@ -73,10 +82,10 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("human-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
     entry("human-right-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
     entry("trash.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
-    entry("bug-0.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
-    entry("bug-90.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
-    entry("bug-180.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
-    entry("bug-270.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-up.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-down.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
     entry("terminal.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
     entry("door-red.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
     entry("door-blue.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
@@ -98,8 +107,8 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
             ScreenID.TTS,
             "The Tech Stack",
             new ArrayList<Mascot>(Arrays.asList(
-                new Mascot(MoverID.QUOKKA, 10, 15, true),
-                new Mascot(MoverID.RACCOON, 20, 15, false)
+                new Mascot(MoverID.QUOKKA, 10, 15, Direction.RIGHT),
+                new Mascot(MoverID.RACCOON, 20, 15, Direction.LEFT)
             )),
             new ArrayList<Collidable>(Arrays.asList(
                 new Block(0, 31, 16, 17),
@@ -114,13 +123,17 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Block(4, 4, 8, 9),
                 new Block(7, 13, 6, 6),
                 new Block(18, 29, 6, 6),
-                new Block(4, 4, 4, 4)
+                new Block(4, 4, 4, 4),
+                new Block(21, 24, 12, 12),
+                new Block(21, 23, 10, 10)
             )),
             new ArrayList<Interactable>(Arrays.asList(
                 new SteelBlock(2, 13, 11, 11),
                 new SteelBlock(18, 24, 11, 11),
                 new Door(16, 15, true),
-                new Human(9, 10, true),
+                new Human(9, 10, Direction.RIGHT),
+                new Bug(20, 10, Direction.RIGHT),
+                new Bug(4, 3, Direction.RIGHT),
                 new Trash(ItemID.BLUEKEY, 4, 15),
                 new Trash(ItemID.MAGNET, 5, 15),
                 new Trash(ItemID.REDKEY, 26, 15)
@@ -296,7 +309,7 @@ public interface Collidable {
 
 public interface Interactable {
     public void drawSelf();
-    public void interact(ArrayList<Mascot> mascots);
+    public InteractCode interact(ArrayList<Mascot> mascots);
 }
 
 public void backButton(float x, float y, float width, float height) {

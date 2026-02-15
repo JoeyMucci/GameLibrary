@@ -4,8 +4,8 @@ public class Mascot extends Mover {
     private boolean canJump, isMagnetized;
     private ArrayList<ItemID> items;
 
-    public Mascot(MoverID id, int rightBlock, int bottomBlock, boolean facingRight) {
-        super(id, rightBlock, bottomBlock, facingRight);
+    public Mascot(MoverID id, int rightBlock, int bottomBlock, Direction dir) {
+        super(id, rightBlock, bottomBlock, dir);
         this.items = new ArrayList<ItemID>();
         keys = mascotKeys.get(id);
         canJump = true;
@@ -44,12 +44,12 @@ public class Mascot extends Mover {
         // Going left
         if(isKeyPressed(keys.left) && !isKeyPressed(keys.right)) {
             xSpeed = -XSPEED;   
-            facingRight = false;
+            dir = Direction.LEFT;
         }
         // Going right
         else if(isKeyPressed(keys.right) && !isKeyPressed(keys.left)) {
             xSpeed = XSPEED;
-            facingRight = true;
+            dir = Direction.RIGHT;
         }
         else {
             xSpeed = 0;
