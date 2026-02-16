@@ -1,5 +1,5 @@
 public class Trash implements Collidable, Interactable {
-    private final String spriteName = "trash.png";
+    private String spriteName = "trash.png";
     private Coordinate location;
     private ItemID item;
     private boolean used;
@@ -40,6 +40,7 @@ public class Trash implements Collidable, Interactable {
                 ) {
                     if(mascot.getBottomRight().y == getTopLeft().y && mascot.isDoingAction()) {
                         used = true;
+                        spriteName = "trash-used.png";
                         mascot.getItem(item);
                     }
                 }

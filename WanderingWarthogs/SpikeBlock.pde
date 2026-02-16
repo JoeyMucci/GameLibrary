@@ -1,9 +1,7 @@
-public class SteelBlock extends Block implements Interactable {
-    public final float MAGNET_BUFFER = BLOCK_SIZE / 2;
-
-    public SteelBlock(int leftBlock, int rightBlock, int topBlock, int bottomBlock) {
+public class SpikeBlock extends Block implements Interactable {
+    public SpikeBlock(int leftBlock, int rightBlock, int topBlock, int bottomBlock) {
         super(leftBlock, rightBlock, topBlock, bottomBlock);
-        spriteName = "steelblock.png"; 
+        spriteName = "spikeblock.png";
     }
 
     public void drawSelf() {
@@ -16,13 +14,12 @@ public class SteelBlock extends Block implements Interactable {
         }
     }
 
-    // The resolute raccoon can stick to the bottom of steel blocks with magnet equipped
+    // The resolute raccoon can stand on spikes with boots
     public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {
-            if(mascot.id == MoverID.RACCOON && mascot.hasItem(ItemID.MAGNET)) {
-                if(jumpingInto(mascot, this, MAGNET_BUFFER)) {
-                    mascot.setTopY(getBottomRight().y);
-                    mascot.magnetize();
+            if(fallingInto(mascot, this)) {
+                if(mascot.id != MoverID.RACCOON || !mascot.hasItem(ItemID.BOOTS)) {
+                    return InteractCode.HIT;
                 }
             }
         }

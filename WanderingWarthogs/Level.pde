@@ -9,23 +9,29 @@ public class Level extends Screen {
     private color bg;
     
     public Level(LevelInfo levelInfo) {
-        this.id = levelInfo.id;
-        // this.name = levelInfo.name;
-        this.mascots = levelInfo.mascots;
-        this.movers = new ArrayList<Mover>();
-        this.collidables = levelInfo.collidables;
-        this.interactables = levelInfo.interactables;
+    id = levelInfo.id;
+        // name = levelInfo.name;
+        mascots = levelInfo.mascots;
+        movers = new ArrayList<Mover>();
+        collidables = levelInfo.collidables;
+        interactables = levelInfo.interactables;
 
-        for(int i = 0; i < this.mascots.size(); i++) {
-            this.movers.add((Mover) this.mascots.get(i));
+        // Add boundaries
+        collidables.add(new BoundaryBlock(0, BLOCK_WIDTH, BLOCK_HEIGHT - 1, BLOCK_HEIGHT));
+        collidables.add(new BoundaryBlock(0, BLOCK_WIDTH, 0, 1));
+        collidables.add(new BoundaryBlock(0, 1, 0, BLOCK_HEIGHT));
+        collidables.add(new BoundaryBlock(BLOCK_WIDTH - 1, BLOCK_WIDTH, 0, BLOCK_HEIGHT));
+
+        for(int i = 0; i < mascots.size(); i++) {
+            movers.add((Mover) mascots.get(i));
         }
 
-        for(int i = 0; i < this.interactables.size(); i++) {
-            if(this.interactables.get(i) instanceof Mover) {
-                this.movers.add((Mover) this.interactables.get(i));
+        for(int i = 0; i < interactables.size(); i++) {
+            if(interactables.get(i) instanceof Mover) {
+                movers.add((Mover) interactables.get(i));
             }
-            else if(this.interactables.get(i) instanceof Collidable) {
-                this.collidables.add((Collidable) this.interactables.get(i));
+            else if(interactables.get(i) instanceof Collidable) {
+                collidables.add((Collidable) interactables.get(i));
             }
         }
 
@@ -69,7 +75,7 @@ public class Level extends Screen {
         for(Interactable interactable : interactables) {
             InteractCode intCode = interactable.interact(mascots);
             if(intCode == InteractCode.HIT) {
-                bg = DARK_ABG;
+                bg = ORANGE;
             }
         }
         for(Mover mover : movers) {

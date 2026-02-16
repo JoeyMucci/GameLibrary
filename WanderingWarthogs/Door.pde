@@ -4,10 +4,10 @@ public class Door implements Collidable, Interactable {
     private boolean isRed;
 
     public Door(int rightBlock, int bottomBlock, boolean isRed) {
-        this.spriteName = "door" + "-" + (isRed ? "red" : "blue") + ".png";
+        spriteName = "door" + "-" + (isRed ? "red" : "blue") + ".png";
         float leftX = (rightBlock + 1) * BLOCK_SIZE - sprites.get(spriteName).width;
         float topY = (bottomBlock + 1) * BLOCK_SIZE - sprites.get(spriteName).height;
-        this.location = new Coordinate(leftX, topY);
+        location = new Coordinate(leftX, topY);
         this.isRed = isRed;
     }
 

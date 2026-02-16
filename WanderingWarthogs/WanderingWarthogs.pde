@@ -7,6 +7,7 @@ import static java.util.Map.entry;
 // Constants
 public final int WIDTH = 1600, HEIGHT = 900;
 public final int BLOCK_SIZE = 50;
+public final int BLOCK_WIDTH = WIDTH / BLOCK_SIZE - 1, BLOCK_HEIGHT = HEIGHT / BLOCK_SIZE - 1;
 public final int LARGE_FONT_SIZE = 128, MED_FONT_SIZE = 64, SMALL_FONT_SIZE = 32;
 public final int DEFAULT_STROKE = 2, THICK_STROKE = 8;
 
@@ -82,6 +83,7 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("human-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
     entry("human-right-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
     entry("trash.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
+    entry("trash-used.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
     entry("bug-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
     entry("bug-up.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
     entry("bug-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
@@ -93,8 +95,14 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("key-red-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
     entry("key-blue-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
     entry("key-blue-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("boots-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("boots-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
     entry("magnet-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
-    entry("magnet-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5))
+    entry("magnet-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("block.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("spikeblock.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("steelblock.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("techblock.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE))
 );
 
 // Game
@@ -111,10 +119,6 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Mascot(MoverID.RACCOON, 20, 15, Direction.LEFT)
             )),
             new ArrayList<Collidable>(Arrays.asList(
-                new Block(0, 31, 16, 17),
-                new Block(0, 31, 0, 1),
-                new Block(0, 1, 0, 17),
-                new Block(30, 31, 0, 17),
                 new Block(25, 25, 15, 15),
                 new Block(27, 29, 15, 15),
                 new Block(27, 28, 14, 14),
@@ -122,20 +126,21 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Block(4, 6, 10, 10),
                 new Block(4, 4, 8, 9),
                 new Block(7, 13, 6, 6),
-                new Block(18, 29, 6, 6),
+                new TechBlock(18, 29, 6, 6),
                 new Block(4, 4, 4, 4),
                 new Block(21, 24, 12, 12),
                 new Block(21, 23, 10, 10)
             )),
             new ArrayList<Interactable>(Arrays.asList(
-                new SteelBlock(2, 13, 11, 11),
+                new SpikeBlock(2, 13, 11, 11),
                 new SteelBlock(18, 24, 11, 11),
                 new Door(16, 15, true),
-                new Human(9, 10, Direction.RIGHT),
+                // new Human(9, 10, Direction.RIGHT),
                 new Bug(20, 10, Direction.RIGHT),
                 new Bug(4, 3, Direction.RIGHT),
                 new Trash(ItemID.BLUEKEY, 4, 15),
                 new Trash(ItemID.MAGNET, 5, 15),
+                new Trash(ItemID.BOOTS, 6, 15),
                 new Trash(ItemID.REDKEY, 26, 15)
             ))
         )
