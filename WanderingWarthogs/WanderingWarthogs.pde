@@ -135,7 +135,7 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new SpikeBlock(2, 13, 11, 11),
                 new SteelBlock(18, 24, 11, 11),
                 new Door(16, 15, true),
-                // new Human(9, 10, Direction.RIGHT),
+                new Human(9, 10, Direction.RIGHT),
                 new Bug(20, 10, Direction.RIGHT),
                 new Bug(4, 3, Direction.RIGHT),
                 new Trash(ItemID.BLUEKEY, 4, 15),
