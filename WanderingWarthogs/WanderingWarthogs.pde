@@ -1,10 +1,13 @@
 // Imports
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import static java.util.Map.entry; 
 
 // Constants
 public final int WIDTH = 1600, HEIGHT = 900;
 public final int BLOCK_SIZE = 50;
+public final int BLOCK_WIDTH = WIDTH / BLOCK_SIZE - 1, BLOCK_HEIGHT = HEIGHT / BLOCK_SIZE - 1;
 public final int LARGE_FONT_SIZE = 128, MED_FONT_SIZE = 64, SMALL_FONT_SIZE = 32;
 public final int DEFAULT_STROKE = 2, THICK_STROKE = 8;
 
@@ -14,8 +17,29 @@ public final String MAIN_DIR = "WanderingWarthogs/";
 public final String FONTS_DIR = MAIN_DIR + "fonts/";
 public final String SPRITES_DIR = MAIN_DIR + "sprites/";
 
+public final float CONTACT_THRESHOLD = 0.01;
+public final float GRAVITY = 1.0 / 3.0;
+
+public final Coordinate OFFSCREEN = new Coordinate(-1000, -1000);
+
 enum ScreenID {
     FILE_SELECT, LEVEL_SELECT, TTS, TTC, LEVEL3, LEVEL4, LEVEL5
+}
+
+enum MoverID {
+    QUOKKA, RACCOON, HUMAN, BUG;
+}
+
+enum ItemID {
+    REDKEY, BLUEKEY, BOOTS, MAGNET;
+}
+
+enum InteractCode {
+    OK, HIT
+}
+
+enum Direction {
+    LEFT, RIGHT, UP, DOWN
 }
 
 enum Size {
@@ -26,9 +50,23 @@ enum Align {
     START, MID, END
 }
 
-// Game
-public ScreenID currentScreen = ScreenID.FILE_SELECT;
-public Map<String, SpriteInfo> sprites = Map.ofEntries(
+public final Map<MoverID, String> moverNames = Map.ofEntries(
+    entry(MoverID.QUOKKA, "quokka"),
+    entry(MoverID.RACCOON, "raccoon"),
+    entry(MoverID.HUMAN, "human"),
+    entry(MoverID.BUG, "bug")
+);
+public Map<MoverID, MovementKeys> mascotKeys = Map.ofEntries(
+    entry(MoverID.QUOKKA, new MovementKeys('a', 'd', 'w', 's')),
+    entry(MoverID.RACCOON, new MovementKeys(LEFT, RIGHT, UP, DOWN))
+);
+public Map<ItemID, String> itemNames = Map.ofEntries(
+    entry(ItemID.REDKEY, "key-red"),
+    entry(ItemID.BLUEKEY, "key-blue"),
+    entry(ItemID.BOOTS, "boots"),
+    entry(ItemID.MAGNET, "magnet")
+);
+public final Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("quokka-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
     entry("quokka-left-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
     entry("quokka-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 1.5)),
@@ -45,20 +83,118 @@ public Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("human-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
     entry("human-right-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
     entry("trash.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
-    entry("bug-0.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
-    entry("bug-90.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
-    entry("bug-180.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
-    entry("bug-270.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
-    entry("terminal.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE))
+    entry("trash-used.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
+    entry("bug-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-up.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("bug-down.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("terminal.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("door-red.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
+    entry("door-blue.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 2)),
+    entry("key-red-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("key-red-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("key-blue-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("key-blue-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("boots-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("boots-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("magnet-left.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("magnet-right.png", new SpriteInfo(null, BLOCK_SIZE * 1.5, BLOCK_SIZE * 1.5)),
+    entry("block.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("spikeblock.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("steelblock.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE)),
+    entry("techblock.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE))
 );
+
+// Game
+public ScreenID currentScreen = ScreenID.TTS;
+public Map<Integer, Boolean> keyMap = new HashMap<>();
+public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
+    entry(
+        ScreenID.TTS,
+        new LevelInfo(
+            ScreenID.TTS,
+            "The Tech Stack",
+            new ArrayList<Mascot>(Arrays.asList(
+                new Mascot(MoverID.QUOKKA, 10, 15, Direction.RIGHT),
+                new Mascot(MoverID.RACCOON, 20, 15, Direction.LEFT)
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
+                new Block(25, 25, 15, 15),
+                new Block(27, 29, 15, 15),
+                new Block(27, 28, 14, 14),
+                new Block(27, 27, 13, 13),
+                new Block(4, 6, 10, 10),
+                new Block(4, 4, 8, 9),
+                new Block(7, 13, 6, 6),
+                new TechBlock(18, 29, 6, 6),
+                new Block(4, 4, 4, 4),
+                new Block(21, 24, 12, 12),
+                new Block(21, 23, 10, 10)
+            )),
+            new ArrayList<Interactable>(Arrays.asList(
+                new SpikeBlock(2, 13, 11, 11),
+                new SteelBlock(18, 24, 11, 11),
+                new Door(16, 15, true),
+                new Human(9, 10, Direction.RIGHT),
+                new Bug(20, 10, Direction.RIGHT),
+                new Bug(4, 3, Direction.RIGHT),
+                new Trash(ItemID.BLUEKEY, 4, 15),
+                new Trash(ItemID.MAGNET, 5, 15),
+                new Trash(ItemID.BOOTS, 6, 15),
+                new Trash(ItemID.REDKEY, 26, 15)
+            ))
+        )
+    ),
+    entry(
+        ScreenID.TTC,
+        new LevelInfo(
+            ScreenID.TTC,
+            "To the Core",
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
+        )
+    ),
+    entry(
+        ScreenID.LEVEL3,
+        new LevelInfo(
+            ScreenID.LEVEL3,
+            "Level 3",
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
+        )
+    ),
+    entry(
+        ScreenID.LEVEL4,
+        new LevelInfo(
+            ScreenID.LEVEL4,
+            "Level 4",
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
+        )
+    ),
+    entry(
+        ScreenID.LEVEL5,
+        new LevelInfo(
+            ScreenID.LEVEL5,
+            "Level 5",
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
+        )
+    )
+);
+
 public Map<ScreenID, Screen> screens = Map.ofEntries(
     entry(ScreenID.FILE_SELECT, new FileSelect()),
     entry(ScreenID.LEVEL_SELECT, new LevelSelect()),
-    entry(ScreenID.TTS, new TheTechStack()),
-    entry(ScreenID.TTC, new ToTheCore()),
-    entry(ScreenID.LEVEL3, new Level3()),
-    entry(ScreenID.LEVEL4, new Level4()),
-    entry(ScreenID.LEVEL5, new Level5())
+    entry(ScreenID.TTS, new Level(levels.get(ScreenID.TTS))),
+    entry(ScreenID.TTC, new Level(levels.get(ScreenID.TTC))),
+    entry(ScreenID.LEVEL3, new Level(levels.get(ScreenID.LEVEL3))),
+    entry(ScreenID.LEVEL4, new Level(levels.get(ScreenID.LEVEL4))),
+    entry(ScreenID.LEVEL5, new Level(levels.get(ScreenID.LEVEL5)))
 );
 
 public void settings() {
@@ -78,6 +214,36 @@ public void draw() {
 
 public void mouseClicked() {
     currentScreen = screens.get(currentScreen).processClick();
+}
+
+public void keyPressed() {
+    if(key == CODED) {
+        keyMap.put(keyCode, true);
+    }
+
+    // No caps letters allowed
+    if(key >= 'A' && key <= 'Z') {
+        key += 'a' - 'A';
+    }
+
+    keyMap.put((int) key, true);
+}
+
+public void keyReleased() {
+    if(key == CODED) {
+        keyMap.remove(keyCode);
+    }
+
+    // No caps letters allowed
+    if(key >= 'A' && key <= 'Z') {
+        key += 'a' - 'A';
+    }
+
+    keyMap.remove((int) key);
+}
+
+public boolean isKeyPressed(int ch) {
+    return keyMap.get(ch) != null;
 }
 
 public void loadSprites() {
@@ -106,6 +272,49 @@ public class SpriteInfo {
         this.width = width;
         this.height = height;
     }
+}
+
+public class LevelInfo {
+    public ScreenID id;
+    public String name;
+    public ArrayList<Mascot> mascots;
+    public ArrayList<Collidable> collidables;
+    public ArrayList<Interactable> interactables;
+
+    public LevelInfo(
+        ScreenID id, String name,
+        ArrayList<Mascot> mascots,
+        ArrayList<Collidable> collidables,
+        ArrayList<Interactable> interactables
+    ) {
+        this.id = id;
+        this.name = name;
+        this.mascots = mascots;
+        this.collidables = collidables;
+        this.interactables = interactables;
+    }
+}
+
+public class MovementKeys {
+    public int left, right, jump, action;
+
+    public MovementKeys(int left, int right, int jump, int action) {
+        this.left = left;
+        this.right = right;
+        this.jump = jump;
+        this.action = action;
+    }
+}
+
+public interface Collidable {
+    public void drawSelf();
+    public Coordinate getTopLeft();
+    public Coordinate getBottomRight();
+}
+
+public interface Interactable {
+    public void drawSelf();
+    public InteractCode interact(ArrayList<Mascot> mascots);
 }
 
 public void backButton(float x, float y, float width, float height) {
@@ -151,18 +360,51 @@ public void setText(Size sz, color c) {
     }
 }
 
-public int extractRed(color c) {
-    return c >> 16 & 0xFF;
-} 
-
-public int extractGreen(color c) {
-    return c >> 8 & 0xFF;
-} 
-
-public int extractBlue(color c) {
-    return c & 0xFF;
-} 
-
 public boolean mouseInRect(float x, float y, float width, float height) {
     return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+}
+
+public boolean rightInto(Mover mover, Collidable collidable) {
+    return (
+        mover.getTopLeft().y < collidable.getBottomRight().y &&
+        mover.getBottomRight().y > collidable.getTopLeft().y &&
+        mover.getPrevBottomRight().x <= collidable.getTopLeft().x &&
+        mover.getBottomRight().x >= collidable.getTopLeft().x
+    );
+}
+
+public boolean leftInto(Mover mover, Collidable collidable) {
+    return (
+        mover.getTopLeft().y < collidable.getBottomRight().y &&
+        mover.getBottomRight().y > collidable.getTopLeft().y &&
+        mover.getPrevTopLeft().x >= collidable.getBottomRight().x &&
+        mover.getTopLeft().x <= collidable.getBottomRight().x
+    );
+}
+
+public boolean jumpingInto(Mover mover, Collidable collidable) {
+    return (
+        mover.getTopLeft().x < collidable.getBottomRight().x &&
+        mover.getBottomRight().x > collidable.getTopLeft().x &&
+        mover.getPrevTopLeft().y >= collidable.getBottomRight().y &&
+        mover.getTopLeft().y <= collidable.getBottomRight().y
+    );
+}
+
+public boolean jumpingInto(Mover mover, Collidable collidable, float xbuffer) {
+    return (
+        mover.getTopLeft().x + xbuffer < collidable.getBottomRight().x &&
+        mover.getBottomRight().x - xbuffer > collidable.getTopLeft().x &&
+        mover.getPrevTopLeft().y >= collidable.getBottomRight().y &&
+        mover.getTopLeft().y <= collidable.getBottomRight().y
+    );
+}
+
+public boolean fallingInto(Mover mover, Collidable collidable) {
+    return (
+        mover.getTopLeft().x < collidable.getBottomRight().x &&
+        mover.getBottomRight().x > collidable.getTopLeft().x &&
+        mover.getPrevBottomRight().y <= collidable.getTopLeft().y &&
+        mover.getBottomRight().y >= collidable.getTopLeft().y
+    );
 }
