@@ -1,0 +1,58 @@
+public class Coin implements Interactable {
+    private final float CONTACT_BUFFER = 10;
+    private CoinID id;
+    private Coordinate location;
+    private String spriteName;
+
+    public Coin(int rightBlock, int bottomBlock, CoinID id) {
+        if(id == CoinID.QUESTING) {
+            spriteName = "questing-chip.png";
+        }
+        else if(id == CoinID.RESOLUTE) {
+            spriteName = "resolute-chip.png";
+        }
+        else {
+            spriteName = "canonical-chip.png";
+        }
+        float leftX = (rightBlock + 1) * BLOCK_SIZE - sprites.get(spriteName).width;
+        float topY = (bottomBlock + 1) * BLOCK_SIZE - sprites.get(spriteName).height;
+        location = new Coordinate(leftX, topY);
+        this.id = id;
+    }
+
+    public void drawSelf() {
+        image(sprites.get(spriteName).image, location.x, location.y);
+    }
+
+    public float getLeftX() {
+        return location.x + CONTACT_BUFFER;
+    }
+
+    public float getRightX() {
+        return location.x + sprites.get(spriteName).width - CONTACT_BUFFER;
+    }
+
+    public float getTopY() {
+        return location.y + CONTACT_BUFFER;
+
+    }
+
+    public float getBottomY() {
+        return location.y + sprites.get(spriteName).height - CONTACT_BUFFER;
+    }
+
+    public InteractCode interact(ArrayList<Mascot> mascots) {
+        for(Mascot mascot : mascots) {
+            if(
+                id == CoinID.CANONICAL ||  
+                id == CoinID.QUESTING && mascot.id == MoverID.QUOKKA ||
+                id == CoinID.RESOLUTE && mascot.id == MoverID.RACCOON 
+            ) {
+                if(mascot.isTouching(this)) {
+                    return InteractCode.HIT;
+                }
+            }
+        }
+        return InteractCode.OK;
+    }
+}

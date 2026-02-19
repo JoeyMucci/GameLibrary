@@ -41,12 +41,12 @@ public class Level extends Screen {
     public void drawSelf() {
         background(bg);
         bg = LIGHT_ABG;
-        for(int h = 0; h <= HEIGHT; h += BLOCK_SIZE) {
-            line(0, h, WIDTH, h);
-        }
-        for(int w = 0; w <= WIDTH; w += BLOCK_SIZE) {
-            line(w, 0, w, HEIGHT);
-        }
+        // for(int h = 0; h <= HEIGHT; h += BLOCK_SIZE) {
+        //     line(0, h, WIDTH, h);
+        // }
+        // for(int w = 0; w <= WIDTH; w += BLOCK_SIZE) {
+        //     line(w, 0, w, HEIGHT);
+        // }
         
         for(Mover mover : movers) {
             mover.moveSelf();
@@ -64,7 +64,10 @@ public class Level extends Screen {
                 if(
                     (mover instanceof Mascot && otherMover instanceof Human) ||
                     (mover instanceof Human && otherMover instanceof Mascot) ||
-                    (mover instanceof Mascot && otherMover instanceof Mascot && otherMover.isGrounded()) // Mascot can land on a grounded mascot
+                    // Mascot can land on a grounded mascot
+                    (
+                        mover instanceof Mascot && otherMover instanceof Mascot && otherMover.isGrounded() && 
+                        mover.getTopLeft().y < otherMover.getTopLeft().y) 
                 ) { 
                     ArrayList<Collidable> otherCollidable = new ArrayList<Collidable>(Arrays.asList(otherMover));
                     mover.collideY(otherCollidable);
@@ -78,14 +81,14 @@ public class Level extends Screen {
                 bg = ORANGE;
             }
         }
+        for(Interactable interactable : interactables) {
+            interactable.drawSelf();
+        }
         for(Mover mover : movers) {
             mover.drawSelf();
         }
         for(Collidable collidable : collidables) {
             collidable.drawSelf();
-        }
-        for(Interactable interactable : interactables) {
-            interactable.drawSelf();
         }
     }
 

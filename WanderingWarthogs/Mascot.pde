@@ -90,4 +90,13 @@ public class Mascot extends Mover {
         ground();
         isMagnetized = true;
     }
+
+    public boolean isTouching(Coin coin) {
+        return (
+            getTopLeft().x < coin.getRightX() &&
+            getTopLeft().y < coin.getBottomY() &&
+            getBottomRight().x > coin.getLeftX() &&
+            getBottomRight().y > coin.getTopY()
+        );
+    }
 }

@@ -4,7 +4,7 @@ public class Trash implements Collidable, Interactable {
     private ItemID item;
     private boolean used;
 
-    public Trash(ItemID item, int rightBlock, int bottomBlock) {
+    public Trash(int rightBlock, int bottomBlock, ItemID item) {
         float leftX = (rightBlock + 1) * BLOCK_SIZE - sprites.get(spriteName).width;
         float topY = (bottomBlock + 1) * BLOCK_SIZE - sprites.get(spriteName).height;
         location = new Coordinate(leftX, topY);
@@ -13,7 +13,6 @@ public class Trash implements Collidable, Interactable {
     }
 
     public void drawSelf() {
-        // TODO: Implement unused and used sprites
         image(sprites.get(spriteName).image, location.x, location.y);
     }
 

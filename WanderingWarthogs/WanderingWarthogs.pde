@@ -34,6 +34,10 @@ enum ItemID {
     REDKEY, BLUEKEY, BOOTS, MAGNET;
 }
 
+enum CoinID {
+    QUESTING, RESOLUTE, CANONICAL;
+}
+
 enum InteractCode {
     OK, HIT
 }
@@ -115,33 +119,38 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
             ScreenID.TTS,
             "The Tech Stack",
             new ArrayList<Mascot>(Arrays.asList(
-                new Mascot(MoverID.QUOKKA, 10, 15, Direction.RIGHT),
-                new Mascot(MoverID.RACCOON, 20, 15, Direction.LEFT)
+                new Mascot(MoverID.QUOKKA, 4, 15, Direction.RIGHT),
+                new Mascot(MoverID.RACCOON, 27, 15, Direction.LEFT)
             )),
             new ArrayList<Collidable>(Arrays.asList(
-                new Block(25, 25, 15, 15),
-                new Block(27, 29, 15, 15),
-                new Block(27, 28, 14, 14),
-                new Block(27, 27, 13, 13),
-                new Block(4, 6, 10, 10),
-                new Block(4, 4, 8, 9),
-                new Block(7, 13, 6, 6),
-                new TechBlock(18, 29, 6, 6),
-                new Block(4, 4, 4, 4),
-                new Block(21, 24, 12, 12),
-                new Block(21, 23, 10, 10)
+                new Block(8, 11, 15, 15),
+                new Block(9, 10, 14, 14),
+                new Block(10, 10, 13, 13),
+                new Block(21, 24, 15, 15),
+                new Block(22, 23, 14, 14),
+                new Block(22, 22, 13, 13),
+                new Block(15, 16, 15, 15),
+                new Block(15, 16, 13, 13),
+                new Block(2, 7, 11, 11),
+                new Block(7, 7, 8, 11),
+                new Block(7, 10, 8, 8),
+                new Block(6, 6, 10, 10),
+                new Block(21, 30, 8, 8),
+                new Block(2, 4, 6, 8),
+                new Block(27, 28, 6, 7),
+                new TechBlock(12, 19, 11, 11),
+                new TechBlock(13, 18, 10, 10),
+                new TechBlock(14, 17, 9, 9),
+                new TechBlock(15, 16, 8, 8)
             )),
             new ArrayList<Interactable>(Arrays.asList(
-                new SpikeBlock(2, 13, 11, 11),
-                new SteelBlock(18, 24, 11, 11),
-                new Door(16, 15, true),
-                new Human(9, 10, Direction.RIGHT),
-                new Bug(20, 10, Direction.RIGHT),
-                new Bug(4, 3, Direction.RIGHT),
-                new Trash(ItemID.BLUEKEY, 4, 15),
-                new Trash(ItemID.MAGNET, 5, 15),
-                new Trash(ItemID.BOOTS, 6, 15),
-                new Trash(ItemID.REDKEY, 26, 15)
+                new Coin(3, 10, CoinID.QUESTING),
+                new Coin(19, 14, CoinID.RESOLUTE),
+                new Coin(16, 3, CoinID.CANONICAL),
+                new Door(4, 10, true),
+                new Bug(15, 7, Direction.RIGHT),
+                new Human(20, 15, Direction.LEFT),
+                new Trash(29, 7, ItemID.REDKEY)
             ))
         )
     ),
