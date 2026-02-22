@@ -4,7 +4,8 @@ public class Coin implements Interactable {
     private Coordinate location;
     private String spriteName;
 
-    public Coin(int rightBlock, int bottomBlock, CoinID id) {
+    // It is useful to have coins at half heights
+    public Coin(float rightBlock, float bottomBlock, CoinID id) {
         if(id == CoinID.QUESTING) {
             spriteName = "questing-chip.png";
         }

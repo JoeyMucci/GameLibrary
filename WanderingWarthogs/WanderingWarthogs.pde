@@ -23,7 +23,7 @@ public final float GRAVITY = 1.0 / 3.0;
 public final Coordinate OFFSCREEN = new Coordinate(-1000, -1000);
 
 enum ScreenID {
-    FILE_SELECT, LEVEL_SELECT, TTS, TTC, LEVEL3, LEVEL4, LEVEL5
+    FILE_SELECT, LEVEL_SELECT, TTS, DC, ALAP, TFT, TTC
 }
 
 enum MoverID {
@@ -110,7 +110,7 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
 );
 
 // Game
-public ScreenID currentScreen = ScreenID.TTS;
+public ScreenID currentScreen = ScreenID.DC;
 public Map<Integer, Boolean> keyMap = new HashMap<>();
 public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
     entry(
@@ -144,14 +144,72 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new TechBlock(15, 16, 8, 8)
             )),
             new ArrayList<Interactable>(Arrays.asList(
-                new Coin(3, 10, CoinID.QUESTING),
-                new Coin(19, 14, CoinID.RESOLUTE),
-                new Coin(16, 3, CoinID.CANONICAL),
                 new Door(4, 10, true),
                 new Bug(15, 7, Direction.RIGHT),
                 new Human(20, 15, Direction.LEFT),
-                new Trash(29, 7, ItemID.REDKEY)
+                new Trash(29, 7, ItemID.REDKEY),
+                new Coin(3, 10, CoinID.QUESTING),
+                new Coin(19, 14, CoinID.RESOLUTE),
+                new Coin(16, 3, CoinID.CANONICAL)
             ))
+        )
+    ),
+    entry(
+        ScreenID.DC,
+        new LevelInfo(
+            ScreenID.DC,
+            "Dropped Connection",
+            new ArrayList<Mascot>(Arrays.asList(
+                new Mascot(MoverID.QUOKKA, 5, 15, Direction.RIGHT),
+                new Mascot(MoverID.RACCOON, 6, 15, Direction.RIGHT)
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
+                new Block(3, 3, 15, 15),
+                new Block(25, 25, 15, 15),
+                new Block(27, 29, 15, 15),
+                new Block(27, 28, 14, 14),
+                new Block(27, 27, 13, 13),
+                new Block(7, 13, 11, 11),
+                new Block(18, 24, 11, 11),
+                new Block(6, 6, 10, 11),
+                new Block(5, 5, 9, 10),
+                new Block(4, 4, 8, 9),
+                new Block(7, 13, 6, 6),
+                new Block(18, 24, 6, 6),
+                new Block(4, 4, 4, 4),
+                new Block(25, 29, 2, 3)
+            )),
+            new ArrayList<Interactable>(Arrays.asList(
+                new SpikeBlock(2, 3, 6, 6),
+                new SpikeBlock(25, 29, 6, 6),
+                new Bug(19, 10, Direction.RIGHT),
+                new Bug(4, 3, Direction.RIGHT),
+                new Human(10, 10, Direction.RIGHT),
+                new Trash(26, 15, ItemID.BOOTS),
+                new Coin(3, 8.5, CoinID.QUESTING),
+                new Coin(29, 5, CoinID.RESOLUTE),
+                new Coin(3.5, 3, CoinID.CANONICAL)
+            ))
+        )
+    ),
+    entry(
+        ScreenID.ALAP,
+        new LevelInfo(
+            ScreenID.ALAP,
+            "Attach Like a Pro",
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
+        )
+    ),
+    entry(
+        ScreenID.TFT,
+        new LevelInfo(
+            ScreenID.TFT,
+            "Two-Factor Trial",
+            new ArrayList<Mascot>(),
+            new ArrayList<Collidable>(),
+            new ArrayList<Interactable>()
         )
     ),
     entry(
@@ -163,36 +221,6 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
             new ArrayList<Collidable>(),
             new ArrayList<Interactable>()
         )
-    ),
-    entry(
-        ScreenID.LEVEL3,
-        new LevelInfo(
-            ScreenID.LEVEL3,
-            "Level 3",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
-        )
-    ),
-    entry(
-        ScreenID.LEVEL4,
-        new LevelInfo(
-            ScreenID.LEVEL4,
-            "Level 4",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
-        )
-    ),
-    entry(
-        ScreenID.LEVEL5,
-        new LevelInfo(
-            ScreenID.LEVEL5,
-            "Level 5",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
-        )
     )
 );
 
@@ -200,10 +228,10 @@ public Map<ScreenID, Screen> screens = Map.ofEntries(
     entry(ScreenID.FILE_SELECT, new FileSelect()),
     entry(ScreenID.LEVEL_SELECT, new LevelSelect()),
     entry(ScreenID.TTS, new Level(levels.get(ScreenID.TTS))),
-    entry(ScreenID.TTC, new Level(levels.get(ScreenID.TTC))),
-    entry(ScreenID.LEVEL3, new Level(levels.get(ScreenID.LEVEL3))),
-    entry(ScreenID.LEVEL4, new Level(levels.get(ScreenID.LEVEL4))),
-    entry(ScreenID.LEVEL5, new Level(levels.get(ScreenID.LEVEL5)))
+    entry(ScreenID.DC, new Level(levels.get(ScreenID.DC))),
+    entry(ScreenID.ALAP, new Level(levels.get(ScreenID.ALAP))),
+    entry(ScreenID.TFT, new Level(levels.get(ScreenID.TFT))),
+    entry(ScreenID.TTC, new Level(levels.get(ScreenID.TTC)))
 );
 
 public void settings() {

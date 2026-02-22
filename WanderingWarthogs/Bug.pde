@@ -43,6 +43,9 @@ public class Bug extends Mover implements Interactable {
             }
             dir = nextDirs.get(dir);
         }
+
+        xSpeed = 0;
+        ySpeed = 0;
         switch(dir) {
         case LEFT:
             xSpeed = -SPEED;
@@ -66,14 +69,20 @@ public class Bug extends Mover implements Interactable {
     public void collideX(ArrayList<Collidable> collidables) {
         for(Collidable collidable : collidables) {
             if(leftInto(this, collidable)) {
-                inContact = true;
+                // Prevents false positives for narrow paths
+                if(dir != nextDirs.get(Direction.LEFT)) {
+                    inContact = true;
+                }
                 if(dir == Direction.LEFT) {
                     dir = prevDirs.get(dir);
                     setLeftX(collidable.getBottomRight().x);
                 }
             }
             if(rightInto(this, collidable)) {
-                inContact = true;
+                
+                if(dir != nextDirs.get(Direction.RIGHT)) {
+                    inContact = true;
+                }
                 if(dir == Direction.RIGHT) {
                     dir = prevDirs.get(dir);
                     setRightX(collidable.getTopLeft().x);
@@ -85,14 +94,20 @@ public class Bug extends Mover implements Interactable {
     public void collideY(ArrayList<Collidable> collidables) {
         for(Collidable collidable : collidables) {
             if(jumpingInto(this, collidable)) {
-                inContact = true;
+                // Prevents false positives for narrow paths
+                if(dir != nextDirs.get(Direction.UP)) {
+                    inContact = true;
+                }
                 if(dir == Direction.UP) {
                     dir = prevDirs.get(dir);
                     setTopY(collidable.getBottomRight().y);
                 }
             }
             if(fallingInto(this, collidable)) {
-                inContact = true;
+                // Prevents false positives for narrow paths
+                if(dir != nextDirs.get(Direction.DOWN)) {
+                    inContact = true;
+                }
                 if(dir == Direction.DOWN) {
                     dir = prevDirs.get(dir);
                     setBottomY(collidable.getTopLeft().y);

@@ -9,10 +9,10 @@ public class LevelSelect extends Screen {
     private Coordinate[] slotLocs = new Coordinate[NUM_LEVELS];
     private final LevelInfo[] LEVEL_INFO = {
         levels.get(ScreenID.TTS),
-        levels.get(ScreenID.TTC),
-        levels.get(ScreenID.LEVEL3),
-        levels.get(ScreenID.LEVEL4),
-        levels.get(ScreenID.LEVEL5)
+        levels.get(ScreenID.DC),
+        levels.get(ScreenID.ALAP),
+        levels.get(ScreenID.TFT),
+        levels.get(ScreenID.TTC)
     };
 
     public LevelSelect() {
