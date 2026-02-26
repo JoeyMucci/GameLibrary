@@ -110,7 +110,7 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
 );
 
 // Game
-public ScreenID currentScreen = ScreenID.DC;
+public ScreenID currentScreen = ScreenID.TTS;
 public Map<Integer, Boolean> keyMap = new HashMap<>();
 public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
     entry(
@@ -197,9 +197,48 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
         new LevelInfo(
             ScreenID.ALAP,
             "Attach Like a Pro",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
+            new ArrayList<Mascot>(Arrays.asList(
+                new Mascot(MoverID.QUOKKA, 18, 15, Direction.RIGHT),
+                new Mascot(MoverID.RACCOON, 13, 3, Direction.LEFT)
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
+                new Block(12, 12, 15, 15),
+                new Block(13, 13, 13, 15),
+                new Block(20, 20, 15, 15),
+                new Block(5, 5, 14, 14),
+                new Block(21, 21, 14, 15),
+                new Block(9, 9, 13, 13),
+                new Block(17, 17, 12, 12),
+                new Block(21, 21, 11, 12),
+                new Block(2, 11, 11, 11),
+                new Block(7, 7, 8, 10),
+                new Block(6, 6, 9, 10),
+                new Block(14, 16, 9, 9),
+                new Block(2, 2, 6, 6),
+                new Block(3, 3, 7, 7),
+                new Block(18, 18, 6, 6),
+                new Block(28, 28, 6, 6),
+                new Block(5, 5, 4, 4),
+                new Block(9, 9, 2, 3),
+                new Block(19, 19, 2, 3),
+                new Block(25, 25, 2, 3)
+            )),
+            new ArrayList<Interactable>(Arrays.asList(
+                new SpikeBlock(22, 29, 15, 15),
+                new SpikeBlock(21, 21, 10, 10),
+                new SpikeBlock(7, 7, 7, 7),
+                new SteelBlock(17, 29, 7, 7),
+                new SteelBlock(4, 14, 4, 4),
+                new Bug(5, 13, Direction.RIGHT),
+                new Bug(9, 12, Direction.RIGHT),
+                new Bug(15, 8, Direction.RIGHT),
+                new Human(29, 14, Direction.LEFT),
+                new Human(26, 6, Direction.LEFT),
+                new Trash(14, 15, ItemID.MAGNET),
+                new Coin(29, 4, CoinID.QUESTING),
+                new Coin(26, 11, CoinID.RESOLUTE),
+                new Coin(3, 14, CoinID.CANONICAL)
+            ))
         )
     ),
     entry(
