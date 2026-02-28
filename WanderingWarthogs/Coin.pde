@@ -1,15 +1,15 @@
-public class Coin implements Interactable {
+public class Chip implements Interactable {
     private final float CONTACT_BUFFER = 10;
-    private CoinID id;
+    private ChipID id;
     private Coordinate location;
     private String spriteName;
 
-    // It is useful to have coins at half heights
-    public Coin(float rightBlock, float bottomBlock, CoinID id) {
-        if(id == CoinID.QUESTING) {
+    // It is useful to have chips at half heights
+    public Chip(float rightBlock, float bottomBlock, ChipID id) {
+        if(id == ChipID.QUESTING) {
             spriteName = "questing-chip.png";
         }
-        else if(id == CoinID.RESOLUTE) {
+        else if(id == ChipID.RESOLUTE) {
             spriteName = "resolute-chip.png";
         }
         else {
@@ -45,9 +45,9 @@ public class Coin implements Interactable {
     public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {
             if(
-                id == CoinID.CANONICAL ||  
-                id == CoinID.QUESTING && mascot.id == MoverID.QUOKKA ||
-                id == CoinID.RESOLUTE && mascot.id == MoverID.RACCOON 
+                id == ChipID.CANONICAL ||  
+                id == ChipID.QUESTING && mascot.id == MoverID.QUOKKA ||
+                id == ChipID.RESOLUTE && mascot.id == MoverID.RACCOON 
             ) {
                 if(mascot.isTouching(this)) {
                     return InteractCode.HIT;

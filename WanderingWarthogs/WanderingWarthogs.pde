@@ -34,7 +34,7 @@ enum ItemID {
     REDKEY, BLUEKEY, BOOTS, MAGNET;
 }
 
-enum CoinID {
+enum ChipID {
     QUESTING, RESOLUTE, CANONICAL;
 }
 
@@ -148,9 +148,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Bug(15, 7, Direction.RIGHT),
                 new Human(20, 15, Direction.LEFT),
                 new Trash(29, 7, ItemID.REDKEY),
-                new Coin(3, 10, CoinID.QUESTING),
-                new Coin(19, 14, CoinID.RESOLUTE),
-                new Coin(16, 3, CoinID.CANONICAL)
+                new Chip(3, 10, ChipID.QUESTING),
+                new Chip(19, 14, ChipID.RESOLUTE),
+                new Chip(16, 3, ChipID.CANONICAL)
             ))
         )
     ),
@@ -186,9 +186,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Bug(4, 3, Direction.RIGHT),
                 new Human(10, 10, Direction.RIGHT),
                 new Trash(26, 15, ItemID.BOOTS),
-                new Coin(3, 8.5, CoinID.QUESTING),
-                new Coin(29, 5, CoinID.RESOLUTE),
-                new Coin(3.5, 3, CoinID.CANONICAL)
+                new Chip(3, 8.5, ChipID.QUESTING),
+                new Chip(29, 5, ChipID.RESOLUTE),
+                new Chip(3.5, 3, ChipID.CANONICAL)
             ))
         )
     ),
@@ -235,9 +235,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Human(29, 14, Direction.LEFT),
                 new Human(26, 6, Direction.LEFT),
                 new Trash(14, 15, ItemID.MAGNET),
-                new Coin(29, 4, CoinID.QUESTING),
-                new Coin(26, 11, CoinID.RESOLUTE),
-                new Coin(3, 14, CoinID.CANONICAL)
+                new Chip(29, 4, ChipID.QUESTING),
+                new Chip(26, 11, ChipID.RESOLUTE),
+                new Chip(3, 14, ChipID.CANONICAL)
             ))
         )
     ),
@@ -291,9 +291,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Human(5, 9, Direction.LEFT),
                 new Trash(6, 15, ItemID.BLUEKEY),
                 new Trash(15, 15, ItemID.REDKEY),
-                new Coin(8, 13, CoinID.QUESTING),
-                new Coin(21, 9.5, CoinID.RESOLUTE),
-                new Coin(28.5, 3, CoinID.CANONICAL)
+                new Chip(8, 13, ChipID.QUESTING),
+                new Chip(21, 9.5, ChipID.RESOLUTE),
+                new Chip(28.5, 3, ChipID.CANONICAL)
             ))
         )
     ),
