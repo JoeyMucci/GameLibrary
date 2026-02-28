@@ -34,11 +34,14 @@ public class Door implements Collidable, Interactable {
         return mascot.hasItem(getKey());
     }
 
-    // The resolute raccoon can stick to the bottom of steel blocks with magnet equipped
+    // The resolute raccoon can open doors if it has the matching key
     public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {
             if(mascot.id == MoverID.RACCOON && hasRightKey(mascot) && mascot.isGrounded()) {
-                if(leftInto(mascot, this) || rightInto(mascot, this)) {
+                if(
+                    (leftInto(mascot, this) || rightInto(mascot, this)) &&
+                    mascot.getBottomRight().y == getBottomRight().y
+                ) {
                     location = OFFSCREEN;
                     mascot.removeItem(getKey());
                 }
