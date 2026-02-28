@@ -110,7 +110,7 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
 );
 
 // Game
-public ScreenID currentScreen = ScreenID.TTS;
+public ScreenID currentScreen = ScreenID.TFT;
 public Map<Integer, Boolean> keyMap = new HashMap<>();
 public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
     entry(
@@ -246,9 +246,55 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
         new LevelInfo(
             ScreenID.TFT,
             "Two-Factor Trial",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
+            new ArrayList<Mascot>(Arrays.asList(
+                new Mascot(MoverID.QUOKKA, 11, 15, Direction.LEFT),
+                new Mascot(MoverID.RACCOON, 5, 15, Direction.LEFT)
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
+                new Block(7, 8, 14, 15),
+                new Block(9, 9, 13, 15),
+                new Block(25, 29, 15, 15),
+                new Block(26, 29, 14, 14),
+                new Block(27, 29, 13, 13),
+                new Block(28, 29, 12, 12),
+                new Block(29, 29, 11, 11),
+                new Block(2, 4, 13, 13),
+                new Block(18, 18, 8, 13),
+                new Block(2, 2, 12, 12),
+                new Block(17, 17, 12, 12),
+                new Block(9, 9, 9, 11),
+                new Block(13, 14, 11, 11),
+                new Block(5, 6, 10, 10),
+                new Block(10, 11, 10, 10),
+                new Block(22, 25, 10, 10),
+                new Block(22, 24, 9, 9),
+                new Block(22, 23, 8, 8),
+                new Block(8, 8, 9, 9),
+                new Block(9, 10, 7, 7),
+                new Block(21, 22, 7, 7),
+                new Block(26, 26, 6, 7),
+                new Block(2, 6, 6, 6),
+                new Block(11, 11, 5, 5),
+                new Block(19, 19, 5, 5),
+                new Block(13, 16, 4, 4),
+                new Block(24, 26, 4, 4)
+            )),
+            new ArrayList<Interactable>(Arrays.asList(
+                new Door(4, 15, true),
+                new Door(19, 15, false),
+                new SpikeBlock(11, 20, 7, 7),
+                new SpikeBlock(27, 29, 7, 7),
+                new Bug(13, 10, Direction.RIGHT),
+                new Bug(15, 11, Direction.DOWN),
+                new Bug(14, 3, Direction.RIGHT),
+                new Bug(25, 3, Direction.RIGHT),
+                new Human(5, 9, Direction.LEFT),
+                new Trash(6, 15, ItemID.BLUEKEY),
+                new Trash(15, 15, ItemID.REDKEY),
+                new Coin(8, 13, CoinID.QUESTING),
+                new Coin(21, 9.5, CoinID.RESOLUTE),
+                new Coin(28.5, 3, CoinID.CANONICAL)
+            ))
         )
     ),
     entry(
