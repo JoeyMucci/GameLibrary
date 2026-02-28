@@ -28,6 +28,38 @@ public class Bug extends Mover implements Interactable {
     }
 
     public void moveSelf() {
+        // If not touching the next direction, can proceed in the next direction
+        if(!contactMap.get(nextDirs.get(dir))) {
+            dir = nextDirs.get(dir);
+        }
+        // Else if touching the current direction, need to change course
+        else if(contactMap.get(dir)) {
+            dir = prevDirs.get(dir);
+
+        }
+
+        xSpeed = 0;
+        ySpeed = 0;
+        switch(dir) {
+        case LEFT:
+            xSpeed = -SPEED;
+            break;
+        case RIGHT:
+            xSpeed = SPEED;
+            break;
+        case UP:
+            ySpeed = -SPEED;
+            break;
+        case DOWN:
+            ySpeed = SPEED;
+            break;
+        default:
+        }
+
+        // Move
+        location.x += xSpeed;
+        location.y += ySpeed;
+
         // Blockify the movements
         if(dir == Direction.LEFT) {
             int block = (int) Math.floor(location.x / BLOCK_SIZE);
@@ -58,34 +90,7 @@ public class Bug extends Mover implements Interactable {
             }
         }
 
-        // If not touching the next direction, can proceed in the next direction
-        if(!contactMap.get(nextDirs.get(dir))) {
-            dir = nextDirs.get(dir);
-        }
-        // Else if touching the current direction, need to change course
-        else if(contactMap.get(dir)) {
-            dir = prevDirs.get(dir);
-        }
-
-        xSpeed = 0;
-        ySpeed = 0;
-        switch(dir) {
-        case LEFT:
-            xSpeed = -SPEED;
-            break;
-        case RIGHT:
-            xSpeed = SPEED;
-            break;
-        case UP:
-            ySpeed = -SPEED;
-            break;
-        case DOWN:
-            ySpeed = SPEED;
-            break;
-        default:
-        }
-        location.x += xSpeed;
-        location.y += ySpeed;
+        // Reset what walls are touched
         contactMap.put(Direction.LEFT, false);
         contactMap.put(Direction.RIGHT, false);
         contactMap.put(Direction.UP, false);
@@ -117,7 +122,7 @@ public class Bug extends Mover implements Interactable {
     // If comes into contact with mascot, notify hit
     public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {
-            if(isTouching(mascot)) {
+            if(isTouching(mascot, 5)) {
                 return InteractCode.HIT;
             }
         }
