@@ -108,12 +108,12 @@ public abstract class Mover implements Collidable {
         }
     }
 
-    public boolean isTouching(Mover other) {
+    public boolean isTouching(Mover other, float buffer) {
         return (
-            getTopLeft().x < other.getBottomRight().x &&
-            getTopLeft().y < other.getBottomRight().y &&
-            getBottomRight().x > other.getTopLeft().x &&
-            getBottomRight().y > other.getTopLeft().y
+            getTopLeft().x + buffer < other.getBottomRight().x &&
+            getTopLeft().y + buffer < other.getBottomRight().y &&
+            getBottomRight().x - buffer > other.getTopLeft().x &&
+            getBottomRight().y - buffer > other.getTopLeft().y
         );
     }
 

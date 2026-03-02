@@ -23,7 +23,7 @@ public final float GRAVITY = 1.0 / 3.0;
 public final Coordinate OFFSCREEN = new Coordinate(-1000, -1000);
 
 enum ScreenID {
-    FILE_SELECT, LEVEL_SELECT, TTS, TTC, LEVEL3, LEVEL4, LEVEL5
+    FILE_SELECT, LEVEL_SELECT, TTS, DC, ALAP, TFT, TTC
 }
 
 enum MoverID {
@@ -32,6 +32,10 @@ enum MoverID {
 
 enum ItemID {
     REDKEY, BLUEKEY, BOOTS, MAGNET;
+}
+
+enum ChipID {
+    QUESTING, RESOLUTE, CANONICAL;
 }
 
 enum InteractCode {
@@ -106,7 +110,7 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
 );
 
 // Game
-public ScreenID currentScreen = ScreenID.TTS;
+public ScreenID currentScreen = ScreenID.TTC;
 public Map<Integer, Boolean> keyMap = new HashMap<>();
 public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
     entry(
@@ -115,33 +119,181 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
             ScreenID.TTS,
             "The Tech Stack",
             new ArrayList<Mascot>(Arrays.asList(
-                new Mascot(MoverID.QUOKKA, 10, 15, Direction.RIGHT),
-                new Mascot(MoverID.RACCOON, 20, 15, Direction.LEFT)
+                new Mascot(MoverID.QUOKKA, 4, 15, Direction.RIGHT),
+                new Mascot(MoverID.RACCOON, 27, 15, Direction.LEFT)
             )),
             new ArrayList<Collidable>(Arrays.asList(
+                new Block(8, 11, 15, 15),
+                new Block(9, 10, 14, 14),
+                new Block(10, 10, 13, 13),
+                new Block(21, 24, 15, 15),
+                new Block(22, 23, 14, 14),
+                new Block(22, 22, 13, 13),
+                new Block(15, 16, 15, 15),
+                new Block(15, 16, 13, 13),
+                new Block(2, 7, 11, 11),
+                new Block(7, 7, 8, 11),
+                new Block(7, 10, 8, 8),
+                new Block(6, 6, 10, 10),
+                new Block(21, 30, 8, 8),
+                new Block(2, 4, 6, 8),
+                new Block(27, 28, 6, 7),
+                new TechBlock(12, 19, 11, 11),
+                new TechBlock(13, 18, 10, 10),
+                new TechBlock(14, 17, 9, 9),
+                new TechBlock(15, 16, 8, 8)
+            )),
+            new ArrayList<Interactable>(Arrays.asList(
+                new Door(4, 10, true),
+                new Bug(15, 7, Direction.RIGHT),
+                new Human(20, 15, Direction.LEFT),
+                new Trash(29, 7, ItemID.REDKEY),
+                new Chip(3, 10, ChipID.QUESTING),
+                new Chip(19, 14, ChipID.RESOLUTE),
+                new Chip(16, 3, ChipID.CANONICAL)
+            ))
+        )
+    ),
+    entry(
+        ScreenID.DC,
+        new LevelInfo(
+            ScreenID.DC,
+            "Dropped Connection",
+            new ArrayList<Mascot>(Arrays.asList(
+                new Mascot(MoverID.QUOKKA, 5, 15, Direction.RIGHT),
+                new Mascot(MoverID.RACCOON, 6, 15, Direction.RIGHT)
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
+                new Block(3, 3, 15, 15),
                 new Block(25, 25, 15, 15),
                 new Block(27, 29, 15, 15),
                 new Block(27, 28, 14, 14),
                 new Block(27, 27, 13, 13),
-                new Block(4, 6, 10, 10),
+                new Block(7, 13, 11, 11),
+                new Block(18, 24, 11, 11),
+                new Block(6, 6, 10, 11),
+                new Block(5, 5, 9, 10),
                 new Block(4, 4, 8, 9),
                 new Block(7, 13, 6, 6),
-                new TechBlock(18, 29, 6, 6),
+                new Block(18, 24, 6, 6),
                 new Block(4, 4, 4, 4),
-                new Block(21, 24, 12, 12),
-                new Block(21, 23, 10, 10)
+                new Block(25, 29, 2, 3)
             )),
             new ArrayList<Interactable>(Arrays.asList(
-                new SpikeBlock(2, 13, 11, 11),
-                new SteelBlock(18, 24, 11, 11),
-                new Door(16, 15, true),
-                new Human(9, 10, Direction.RIGHT),
-                new Bug(20, 10, Direction.RIGHT),
+                new SpikeBlock(2, 3, 6, 6),
+                new SpikeBlock(25, 29, 6, 6),
+                new Bug(19, 10, Direction.RIGHT),
                 new Bug(4, 3, Direction.RIGHT),
-                new Trash(ItemID.BLUEKEY, 4, 15),
-                new Trash(ItemID.MAGNET, 5, 15),
-                new Trash(ItemID.BOOTS, 6, 15),
-                new Trash(ItemID.REDKEY, 26, 15)
+                new Human(10, 10, Direction.RIGHT),
+                new Trash(26, 15, ItemID.BOOTS),
+                new Chip(3, 8.5, ChipID.QUESTING),
+                new Chip(29, 5, ChipID.RESOLUTE),
+                new Chip(3.5, 3, ChipID.CANONICAL)
+            ))
+        )
+    ),
+    entry(
+        ScreenID.ALAP,
+        new LevelInfo(
+            ScreenID.ALAP,
+            "Attach Like a Pro",
+            new ArrayList<Mascot>(Arrays.asList(
+                new Mascot(MoverID.QUOKKA, 18, 15, Direction.RIGHT),
+                new Mascot(MoverID.RACCOON, 13, 3, Direction.LEFT)
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
+                new Block(12, 12, 15, 15),
+                new Block(13, 13, 13, 15),
+                new Block(20, 20, 15, 15),
+                new Block(5, 5, 14, 14),
+                new Block(21, 21, 14, 15),
+                new Block(9, 9, 13, 13),
+                new Block(17, 17, 12, 12),
+                new Block(21, 21, 11, 12),
+                new Block(2, 11, 11, 11),
+                new Block(7, 7, 8, 10),
+                new Block(6, 6, 9, 10),
+                new Block(14, 16, 9, 9),
+                new Block(2, 2, 6, 6),
+                new Block(3, 3, 7, 7),
+                new Block(18, 18, 6, 6),
+                new Block(28, 28, 6, 6),
+                new Block(5, 5, 4, 4),
+                new Block(9, 9, 2, 3),
+                new Block(19, 19, 2, 3),
+                new Block(25, 25, 2, 3)
+            )),
+            new ArrayList<Interactable>(Arrays.asList(
+                new SpikeBlock(22, 29, 15, 15),
+                new SpikeBlock(21, 21, 10, 10),
+                new SpikeBlock(7, 7, 7, 7),
+                new SteelBlock(17, 29, 7, 7),
+                new SteelBlock(4, 14, 4, 4),
+                new Bug(5, 13, Direction.RIGHT),
+                new Bug(9, 12, Direction.RIGHT),
+                new Bug(15, 8, Direction.RIGHT),
+                new Human(29, 14, Direction.LEFT),
+                new Human(26, 6, Direction.LEFT),
+                new Trash(14, 15, ItemID.MAGNET),
+                new Chip(29, 4, ChipID.QUESTING),
+                new Chip(26, 11, ChipID.RESOLUTE),
+                new Chip(3, 14, ChipID.CANONICAL)
+            ))
+        )
+    ),
+    entry(
+        ScreenID.TFT,
+        new LevelInfo(
+            ScreenID.TFT,
+            "Two-Factor Trial",
+            new ArrayList<Mascot>(Arrays.asList(
+                new Mascot(MoverID.QUOKKA, 11, 15, Direction.LEFT),
+                new Mascot(MoverID.RACCOON, 5, 15, Direction.LEFT)
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
+                new Block(7, 8, 14, 15),
+                new Block(9, 9, 13, 15),
+                new Block(25, 29, 15, 15),
+                new Block(26, 29, 14, 14),
+                new Block(27, 29, 13, 13),
+                new Block(28, 29, 12, 12),
+                new Block(29, 29, 11, 11),
+                new Block(2, 4, 13, 13),
+                new Block(18, 18, 8, 13),
+                new Block(2, 2, 12, 12),
+                new Block(17, 17, 12, 12),
+                new Block(9, 9, 9, 11),
+                new Block(13, 14, 11, 11),
+                new Block(5, 6, 10, 10),
+                new Block(10, 11, 10, 10),
+                new Block(22, 25, 10, 10),
+                new Block(22, 24, 9, 9),
+                new Block(22, 23, 8, 8),
+                new Block(8, 8, 9, 9),
+                new Block(9, 10, 7, 7),
+                new Block(21, 22, 7, 7),
+                new Block(26, 26, 6, 7),
+                new Block(2, 6, 6, 6),
+                new Block(11, 11, 5, 5),
+                new Block(19, 19, 5, 5),
+                new Block(13, 16, 4, 4),
+                new Block(24, 26, 4, 4)
+            )),
+            new ArrayList<Interactable>(Arrays.asList(
+                new Door(4, 15, true),
+                new Door(19, 15, false),
+                new SpikeBlock(11, 20, 7, 7),
+                new SpikeBlock(27, 29, 7, 7),
+                new Bug(13, 10, Direction.RIGHT),
+                new Bug(15, 11, Direction.DOWN),
+                new Bug(14, 3, Direction.RIGHT),
+                new Bug(25, 3, Direction.RIGHT),
+                new Human(5, 9, Direction.LEFT),
+                new Trash(6, 15, ItemID.BLUEKEY),
+                new Trash(15, 15, ItemID.REDKEY),
+                new Chip(8, 13, ChipID.QUESTING),
+                new Chip(21, 9.5, ChipID.RESOLUTE),
+                new Chip(28.5, 3, ChipID.CANONICAL)
             ))
         )
     ),
@@ -150,39 +302,52 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
         new LevelInfo(
             ScreenID.TTC,
             "To the Core",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
-        )
-    ),
-    entry(
-        ScreenID.LEVEL3,
-        new LevelInfo(
-            ScreenID.LEVEL3,
-            "Level 3",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
-        )
-    ),
-    entry(
-        ScreenID.LEVEL4,
-        new LevelInfo(
-            ScreenID.LEVEL4,
-            "Level 4",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
-        )
-    ),
-    entry(
-        ScreenID.LEVEL5,
-        new LevelInfo(
-            ScreenID.LEVEL5,
-            "Level 5",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
+            new ArrayList<Mascot>(Arrays.asList(
+                new Mascot(MoverID.QUOKKA, 28, 8, Direction.LEFT),
+                new Mascot(MoverID.RACCOON, 3, 8, Direction.RIGHT)
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
+                new Block(2, 2, 13, 15),
+                new Block(3, 3, 15, 15),
+                new Block(6, 6, 13, 13),
+                new Block(8, 23, 12, 12),
+                new Block(7, 7, 8, 8),
+                new Block(24, 24, 9, 11),
+                new Block(9, 11, 11, 11),
+                new Block(20, 23, 11, 11),
+                new Block(3, 3, 9, 9),
+                new Block(28, 28, 9, 9),
+                new Block(4, 4, 8, 8),
+                new Block(10, 10, 8, 8),
+                new Block(21, 21, 8, 8),
+                new Block(27, 27, 8, 8),
+                new Block(7, 7, 6, 6),
+                new Block(29, 29, 6, 6),
+                new Block(2, 3, 5, 5),
+                new Block(8, 14, 5, 5)
+            )),
+            new ArrayList<Interactable>(Arrays.asList(
+                new SpikeBlock(26, 29, 15, 15),
+                new SpikeBlock(7, 8, 11, 11),
+                new SpikeBlock(25, 25, 10, 10),
+                new SpikeBlock(13, 18, 9, 9),
+                new SpikeBlock(13, 18, 9, 9),
+                new SpikeBlock(24, 24, 8, 8),
+                new SteelBlock(17, 28, 5, 5),
+                new SteelBlock(2, 5, 2, 2),
+                new Bug(6, 12, Direction.RIGHT),
+                new Bug(4, 7, Direction.RIGHT),
+                new Bug(10, 7, Direction.RIGHT),
+                new Bug(21, 7, Direction.RIGHT),
+                new Bug(27, 9, Direction.LEFT),
+                new Human(15, 8, Direction.LEFT),
+                new Human(22, 4, Direction.LEFT),
+                new Trash(29, 14, ItemID.MAGNET),
+                new Trash(29, 5, ItemID.BOOTS),
+                new Chip(26, 9, ChipID.QUESTING),
+                new Chip(3, 4, ChipID.RESOLUTE),
+                new Chip(16, 11, ChipID.CANONICAL)
+            ))
         )
     )
 );
@@ -191,10 +356,10 @@ public Map<ScreenID, Screen> screens = Map.ofEntries(
     entry(ScreenID.FILE_SELECT, new FileSelect()),
     entry(ScreenID.LEVEL_SELECT, new LevelSelect()),
     entry(ScreenID.TTS, new Level(levels.get(ScreenID.TTS))),
-    entry(ScreenID.TTC, new Level(levels.get(ScreenID.TTC))),
-    entry(ScreenID.LEVEL3, new Level(levels.get(ScreenID.LEVEL3))),
-    entry(ScreenID.LEVEL4, new Level(levels.get(ScreenID.LEVEL4))),
-    entry(ScreenID.LEVEL5, new Level(levels.get(ScreenID.LEVEL5)))
+    entry(ScreenID.DC, new Level(levels.get(ScreenID.DC))),
+    entry(ScreenID.ALAP, new Level(levels.get(ScreenID.ALAP))),
+    entry(ScreenID.TFT, new Level(levels.get(ScreenID.TFT))),
+    entry(ScreenID.TTC, new Level(levels.get(ScreenID.TTC)))
 );
 
 public void settings() {

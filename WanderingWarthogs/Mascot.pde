@@ -90,4 +90,13 @@ public class Mascot extends Mover {
         ground();
         isMagnetized = true;
     }
+
+    public boolean isTouching(Chip chip) {
+        return (
+            getTopLeft().x < chip.getRightX() &&
+            getTopLeft().y < chip.getBottomY() &&
+            getBottomRight().x > chip.getLeftX() &&
+            getBottomRight().y > chip.getTopY()
+        );
+    }
 }
