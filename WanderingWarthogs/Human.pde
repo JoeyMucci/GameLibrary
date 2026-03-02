@@ -26,7 +26,7 @@ public class Human extends Mover implements Interactable {
         doingAction = false;
         for(Mascot mascot : mascots) {
             if(mascot.id == MoverID.QUOKKA) {
-                if(getBottomRight().y == mascot.getBottomRight().y && mascot.isGrounded()) {
+                if(getBottomRight().y == mascot.getBottomRight().y && isGrounded() && mascot.isGrounded()) {
                     float blockDistance = Math.abs(getMidPoint().x - mascot.getMidPoint().x) / BLOCK_SIZE;
                     if(blockDistance >= MIN_DIST && blockDistance <= MAX_DIST) {
                         doingAction = true;
