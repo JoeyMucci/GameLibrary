@@ -110,7 +110,7 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
 );
 
 // Game
-public ScreenID currentScreen = ScreenID.TFT;
+public ScreenID currentScreen = ScreenID.TTC;
 public Map<Integer, Boolean> keyMap = new HashMap<>();
 public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
     entry(
@@ -302,9 +302,52 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
         new LevelInfo(
             ScreenID.TTC,
             "To the Core",
-            new ArrayList<Mascot>(),
-            new ArrayList<Collidable>(),
-            new ArrayList<Interactable>()
+            new ArrayList<Mascot>(Arrays.asList(
+                new Mascot(MoverID.QUOKKA, 28, 8, Direction.LEFT),
+                new Mascot(MoverID.RACCOON, 3, 8, Direction.RIGHT)
+            )),
+            new ArrayList<Collidable>(Arrays.asList(
+                new Block(2, 2, 13, 15),
+                new Block(3, 3, 15, 15),
+                new Block(6, 6, 13, 13),
+                new Block(8, 23, 12, 12),
+                new Block(7, 7, 8, 8),
+                new Block(24, 24, 9, 11),
+                new Block(9, 11, 11, 11),
+                new Block(20, 23, 11, 11),
+                new Block(3, 3, 9, 9),
+                new Block(28, 28, 9, 9),
+                new Block(4, 4, 8, 8),
+                new Block(10, 10, 8, 8),
+                new Block(21, 21, 8, 8),
+                new Block(27, 27, 8, 8),
+                new Block(7, 7, 6, 6),
+                new Block(29, 29, 6, 6),
+                new Block(2, 3, 5, 5),
+                new Block(8, 14, 5, 5)
+            )),
+            new ArrayList<Interactable>(Arrays.asList(
+                new SpikeBlock(26, 29, 15, 15),
+                new SpikeBlock(7, 8, 11, 11),
+                new SpikeBlock(25, 25, 10, 10),
+                new SpikeBlock(13, 18, 9, 9),
+                new SpikeBlock(13, 18, 9, 9),
+                new SpikeBlock(24, 24, 8, 8),
+                new SteelBlock(17, 28, 5, 5),
+                new SteelBlock(2, 5, 2, 2),
+                new Bug(6, 12, Direction.RIGHT),
+                new Bug(4, 7, Direction.RIGHT),
+                new Bug(10, 7, Direction.RIGHT),
+                new Bug(21, 7, Direction.RIGHT),
+                new Bug(27, 9, Direction.LEFT),
+                new Human(15, 8, Direction.LEFT),
+                new Human(22, 4, Direction.LEFT),
+                new Trash(29, 14, ItemID.MAGNET),
+                new Trash(29, 5, ItemID.BOOTS),
+                new Chip(26, 9, ChipID.QUESTING),
+                new Chip(3, 4, ChipID.RESOLUTE),
+                new Chip(16, 11, ChipID.CANONICAL)
+            ))
         )
     )
 );
