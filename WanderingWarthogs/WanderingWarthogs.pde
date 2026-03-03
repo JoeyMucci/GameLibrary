@@ -110,7 +110,7 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
 );
 
 // Game
-public ScreenID currentScreen = ScreenID.TTC;
+public ScreenID currentScreen = ScreenID.FILE_SELECT;
 public Map<Integer, Boolean> keyMap = new HashMap<>();
 public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
     entry(
@@ -324,7 +324,8 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Block(7, 7, 6, 6),
                 new Block(29, 29, 6, 6),
                 new Block(2, 3, 5, 5),
-                new Block(8, 14, 5, 5)
+                new Block(8, 14, 5, 5),
+                new Block(13, 13, 10, 11)
             )),
             new ArrayList<Interactable>(Arrays.asList(
                 new SpikeBlock(26, 29, 15, 15),
