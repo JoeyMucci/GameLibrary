@@ -1,5 +1,6 @@
 public class Level extends Screen {
     private final float pauseX = 10, pauseY = 25, pauseW = 150, pauseH = 50;
+    private final float timerWidth = 50;
 
     private ScreenID id;
     // private String name; We will want to use this later for pause/death screen
@@ -8,10 +9,12 @@ public class Level extends Screen {
     private ArrayList<Collidable> collidables;
     private ArrayList<Interactable> interactables;
 
-    private color bg;
+
+    private float startTime;
+    private boolean started = false;
     
     public Level(LevelInfo levelInfo) {
-    id = levelInfo.id;
+        id = levelInfo.id;
         // name = levelInfo.name;
         mascots = levelInfo.mascots;
         movers = new ArrayList<Mover>();
@@ -36,13 +39,15 @@ public class Level extends Screen {
                 collidables.add((Collidable) interactables.get(i));
             }
         }
-
-        bg = LIGHT_ABG;
     }
 
     public void drawSelf() {
-        background(bg);
-        bg = LIGHT_ABG;
+        if(!started) {
+            started = true;
+            startTime = millis();
+        }
+
+        background(LIGHT_ABG);
 
         for(Mover mover : movers) {
             mover.moveSelf();
@@ -72,10 +77,7 @@ public class Level extends Screen {
             mover.collideY(collidables);
         }
         for(Interactable interactable : interactables) {
-            InteractCode intCode = interactable.interact(mascots);
-            if(intCode == InteractCode.HIT) {
-                bg = ORANGE;
-            }
+            interactable.interact(mascots);
         }
 
         for(Collidable collidable : collidables) {
@@ -88,12 +90,19 @@ public class Level extends Screen {
             mover.drawSelf();
         }
         
-
         drawOverlay();
     }
 
     public void drawOverlay() {
         boldButton("Pause (p)", pauseX, pauseY, pauseW, pauseH);
+        timer();
+    }
+
+    public void timer() {
+        int seconds = (int) ((Math.floor(millis() - startTime) / MILLI));
+        String secondsString = String.valueOf(seconds);
+        setText(Size.MED, GRAY);
+        centerText(secondsString, WIDTH - timerWidth * secondsString.length(), WIDTH, pauseY + pauseH);
     }
 
     public ScreenID processClick() {

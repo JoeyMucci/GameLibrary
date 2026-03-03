@@ -19,6 +19,7 @@ public final String SPRITES_DIR = MAIN_DIR + "sprites/";
 
 public final float CONTACT_THRESHOLD = 0.01;
 public final float GRAVITY = 1.0 / 3.0;
+public final float MILLI = 1000;
 
 public final Coordinate OFFSCREEN = new Coordinate(-1000, -1000);
 
