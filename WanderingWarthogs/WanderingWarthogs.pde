@@ -11,7 +11,7 @@ public final int BLOCK_WIDTH = WIDTH / BLOCK_SIZE - 1, BLOCK_HEIGHT = HEIGHT / B
 public final int LARGE_FONT_SIZE = 128, MED_FONT_SIZE = 64, SMALL_FONT_SIZE = 32;
 public final int DEFAULT_STROKE = 2, THICK_STROKE = 8;
 
-public final color ORANGE = #E95420, LIGHT_ABG = #77216F, DARK_ABG = #2C001E, GRAY = #AEA79F;
+public final color ORANGE = #E95420, LIGHT_ABG = #77216F, MID_ABG = #5E2750, DARK_ABG = #2C001E, GRAY = #AEA79F;
 
 public final String MAIN_DIR = "WanderingWarthogs/";
 public final String FONTS_DIR = MAIN_DIR + "fonts/";
@@ -483,19 +483,19 @@ public interface Interactable {
     public InteractCode interact(ArrayList<Mascot> mascots);
 }
 
-public void backButton(float x, float y, float width, float height) {
-    // Draw thicker outline if highlighted
-    if(mouseInRect(x, y, width, height)) {
-        strokeWeight(THICK_STROKE);
-    }
-    else {
-        strokeWeight(DEFAULT_STROKE);
-    }
+public void boldButton(String text, float x, float y, float width, float height) {
+    strokeWeight(DEFAULT_STROKE);
     fill(GRAY);
     rect(x, y, width, height);
-    setText(Size.SMALL, DARK_ABG);
-    centerText("Back", x, x + width, y + SMALL_FONT_SIZE);
-}
+    // Draw ligher text if highlighted
+    if(mouseInRect(x, y, width, height)) {
+        setText(Size.SMALL, LIGHT_ABG);
+    }
+    else {
+        setText(Size.SMALL, DARK_ABG);
+    }
+    centerText(text, x, x + width, y + height - SMALL_FONT_SIZE / 2);
+} 
 
 public void centerText(String text, float height) {
     centerText(text, 0, WIDTH, height);

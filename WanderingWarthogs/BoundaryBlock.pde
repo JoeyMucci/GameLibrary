@@ -6,6 +6,7 @@ public class BoundaryBlock extends Block {
 
     public void drawSelf() {
         fill(DARK_ABG);
+        strokeWeight(DEFAULT_STROKE);
         for(int row = topBlock; row <= bottomBlock; row++) {
             int y = row * BLOCK_SIZE;
             for(int col = leftBlock; col <= rightBlock; col++) {

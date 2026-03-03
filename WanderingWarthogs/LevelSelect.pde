@@ -1,7 +1,7 @@
 public class LevelSelect extends Screen {
     private final int NUM_LEVELS = 5;
     private final int TOP_LEVELS = (NUM_LEVELS + 1) / 2, BOTTOM_LEVELS = NUM_LEVELS / 2;
-    private final float SLOT_SIZE = 300;
+    private final float SLOT_SIZE = 320;
     private final float TOP_GAP = (WIDTH - TOP_LEVELS * SLOT_SIZE) / (TOP_LEVELS + 1);
     private final float BOTTOM_GAP = (WIDTH - BOTTOM_LEVELS * SLOT_SIZE) / (BOTTOM_LEVELS + 1);
     private final float VERTICAL_GAP = (HEIGHT - (2 * SLOT_SIZE)) / (2 + 1);
@@ -40,7 +40,7 @@ public class LevelSelect extends Screen {
         for(int i = 0; i < NUM_LEVELS; i++) {
             levelSlot(LEVEL_INFO[i].name, slotLocs[i].x, slotLocs[i].y);
         }
-        backButton(backX, backY, backW, backH);
+        boldButton("Back", backX, backY, backW, backH);
     }
 
     private void levelSlot(String name, float x, float y) {

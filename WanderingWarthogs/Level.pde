@@ -1,4 +1,6 @@
 public class Level extends Screen {
+    private final float pauseX = 10, pauseY = 25, pauseW = 150, pauseH = 50;
+
     private ScreenID id;
     // private String name; We will want to use this later for pause/death screen
     private ArrayList<Mascot> mascots;
@@ -41,13 +43,7 @@ public class Level extends Screen {
     public void drawSelf() {
         background(bg);
         bg = LIGHT_ABG;
-        // for(int h = 0; h <= HEIGHT; h += BLOCK_SIZE) {
-        //     line(0, h, WIDTH, h);
-        // }
-        // for(int w = 0; w <= WIDTH; w += BLOCK_SIZE) {
-        //     line(w, 0, w, HEIGHT);
-        // }
-        
+
         for(Mover mover : movers) {
             mover.moveSelf();
             for(Mover otherMover : movers) {
@@ -90,10 +86,16 @@ public class Level extends Screen {
         for(Collidable collidable : collidables) {
             collidable.drawSelf();
         }
+
+        drawOverlay();
+    }
+
+    public void drawOverlay() {
+        boldButton("Pause (p)", pauseX, pauseY, pauseW, pauseH);
     }
 
     public ScreenID processClick() {
-        // TODO: will have to process pause and back functionality
+        // TODO: will have to process pause functionality
         return id;
     }
 }
