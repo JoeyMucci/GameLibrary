@@ -77,15 +77,17 @@ public class Level extends Screen {
                 bg = ORANGE;
             }
         }
+
+        for(Collidable collidable : collidables) {
+            collidable.drawSelf();
+        }
         for(Interactable interactable : interactables) {
             interactable.drawSelf();
         }
         for(Mover mover : movers) {
             mover.drawSelf();
         }
-        for(Collidable collidable : collidables) {
-            collidable.drawSelf();
-        }
+        
 
         drawOverlay();
     }
