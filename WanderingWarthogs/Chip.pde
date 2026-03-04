@@ -97,6 +97,8 @@ public class Chip implements Interactable {
         return location.y + sprites.get(spriteName).height - CONTACT_BUFFER;
     }
 
+    public boolean underMascot() { return true;};
+
     public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {
             if(

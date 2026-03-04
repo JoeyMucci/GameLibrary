@@ -14,6 +14,8 @@ public class SpikeBlock extends Block implements Interactable {
         }
     }
 
+    public boolean underMascot() { return true;};
+
     // The resolute raccoon can stand on spikes with boots
     public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {

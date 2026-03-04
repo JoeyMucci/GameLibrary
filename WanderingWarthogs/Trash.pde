@@ -26,6 +26,8 @@ public class Trash implements Collidable, Interactable {
         return new Coordinate(rightX, bottomY);
     }
 
+    public boolean underMascot() { return true;};
+
     // The resolute raccoon can dig while atop a trash can
     public InteractCode interact(ArrayList<Mascot> mascots) {
         if(used) {

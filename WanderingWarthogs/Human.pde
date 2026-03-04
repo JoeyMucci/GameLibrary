@@ -20,6 +20,8 @@ public class Human extends Mover implements Interactable {
         location.y += ySpeed;
     }
 
+    public boolean underMascot() { return true;};
+
     // If the questing quokka is smiling, do action (run to quokka)
     public InteractCode interact(ArrayList<Mascot> mascots) {
         xSpeed = 0;
