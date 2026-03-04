@@ -1,6 +1,11 @@
 public class Level extends Screen {
     private final float pauseX = 10, pauseY = 25, pauseW = 150, pauseH = 50;
     private final float timerWidth = 50;
+    private final float dotSize = 25;
+    private final float dotBuffer = 0.75;
+    private final float dotFrames = FRAME_RATE * dotBuffer;
+    private final float hashtagBuffer = 0.1;
+    private final float hashtagFrames = FRAME_RATE * hashtagBuffer;
 
     private ScreenID id;
     // private String name; We will want to use this later for pause/death screen
@@ -12,6 +17,9 @@ public class Level extends Screen {
 
     private float startTime;
     private boolean started = false;
+
+    private float dotAnimation = 0;
+    private float hashtagAnimation = 0;
     
     public Level(LevelInfo levelInfo) {
         id = levelInfo.id;
@@ -46,6 +54,7 @@ public class Level extends Screen {
             started = true;
             startTime = millis();
         }
+        int terminals = 0;
 
         background(LIGHT_ABG);
 
@@ -77,25 +86,36 @@ public class Level extends Screen {
             mover.collideY(collidables);
         }
         for(Interactable interactable : interactables) {
-            interactable.interact(mascots);
+            InteractCode intCode = interactable.interact(mascots);
+            if(intCode == InteractCode.TERMINAL) {
+                terminals++;
+            }
         }
 
         for(Collidable collidable : collidables) {
             collidable.drawSelf();
         }
         for(Interactable interactable : interactables) {
-            interactable.drawSelf();
+            if(interactable.underMascot()) {
+                interactable.drawSelf();
+            }
         }
         for(Mover mover : movers) {
             mover.drawSelf();
         }
-        
-        drawOverlay();
+        for(Interactable interactable : interactables) {
+            if(!interactable.underMascot()) {
+                interactable.drawSelf();
+            }
+        }
+
+        drawOverlay(terminals);
     }
 
-    public void drawOverlay() {
-        boldButton("Pause (p)", pauseX, pauseY, pauseW, pauseH);
+    public void drawOverlay(int terminals) {
+        boldButton("Pause (" + pauseKey + ")", pauseX, pauseY, pauseW, pauseH);
         timer();
+        progress(terminals);
     }
 
     public void timer() {
@@ -103,6 +123,52 @@ public class Level extends Screen {
         String secondsString = String.valueOf(seconds);
         setText(Size.MED, GRAY);
         centerText(secondsString, WIDTH - timerWidth * secondsString.length(), WIDTH, pauseY + pauseH);
+    }
+
+    public void progress(int terminals) {
+        if(terminals == 1) {
+            dotAnimation = (dotAnimation + 1) % (4 * dotFrames); 
+            hashtagAnimation = 0;
+            fill(GRAY);
+            float h = HEIGHT - BLOCK_SIZE; 
+            if(dotAnimation >= dotFrames) {
+                ellipse(WIDTH / 2 - dotSize * 1.5, h, dotSize, dotSize);
+            }
+            if(dotAnimation >= 2 * dotFrames) {
+                ellipse(WIDTH / 2, h, dotSize, dotSize);
+            }
+            if(dotAnimation >= 3 * dotFrames) {
+                ellipse(WIDTH / 2 + dotSize * 1.5, h, dotSize, dotSize);
+            } 
+        }
+        else if(terminals == 2) {
+            dotAnimation = dotFrames;
+            hashtagAnimation = (hashtagAnimation + 1) % (21 * hashtagFrames); 
+
+            String progress = "";
+            String fullProgress = "[";
+            for(int i = 1; i <= 20; i++) {
+                if(hashtagAnimation >= i * hashtagFrames) {
+                    progress += "#";
+                }
+                else {
+                    progress += "   ";
+                }
+                fullProgress += "#";
+            }
+            fullProgress += "]";
+
+            setText(Size.MED, GRAY);
+            float textWidth = textWidth(fullProgress);
+            float startLoc = (WIDTH - textWidth) / 2;
+            text("[", startLoc, HEIGHT - BLOCK_SIZE / 2);
+            text(progress, startLoc + textWidth("["), HEIGHT - BLOCK_SIZE / 2);
+            text("]", startLoc + textWidth(fullProgress) - textWidth("]"), HEIGHT - BLOCK_SIZE / 2);
+        }
+        else {
+            dotAnimation = dotFrames;
+            hashtagAnimation = 0;
+        }
     }
 
     public ScreenID processClick() {

@@ -99,4 +99,13 @@ public class Mascot extends Mover {
             getBottomRight().y > chip.getTopY()
         );
     }
+
+    public boolean isTouching(Terminal terminal) {
+        return (
+            getTopLeft().x < terminal.getRightX() &&
+            getTopLeft().y < terminal.getBottomY() &&
+            getBottomRight().x > terminal.getLeftX() &&
+            getBottomRight().y > terminal.getTopY()
+        );
+    }
 }

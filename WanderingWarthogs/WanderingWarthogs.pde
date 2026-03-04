@@ -10,6 +10,9 @@ public final int BLOCK_SIZE = 50;
 public final int BLOCK_WIDTH = WIDTH / BLOCK_SIZE - 1, BLOCK_HEIGHT = HEIGHT / BLOCK_SIZE - 1;
 public final int LARGE_FONT_SIZE = 128, MED_FONT_SIZE = 64, SMALL_FONT_SIZE = 32;
 public final int DEFAULT_STROKE = 2, THICK_STROKE = 8;
+public final int FRAME_RATE = 60;
+
+private final char pauseKey = 'P';
 
 public final color ORANGE = #E95420, LIGHT_ABG = #77216F, MID_ABG = #5E2750, DARK_ABG = #2C001E, GRAY = #AEA79F;
 
@@ -40,7 +43,7 @@ enum ChipID {
 }
 
 enum InteractCode {
-    OK, HIT
+    OK, HIT, TERMINAL
 }
 
 enum Direction {
@@ -151,7 +154,9 @@ public Map<ScreenID, LevelInfo> levels = Map.ofEntries(
                 new Trash(29, 7, ItemID.REDKEY),
                 new Chip(3, 10, ChipID.QUESTING),
                 new Chip(19, 14, ChipID.RESOLUTE),
-                new Chip(16, 3, ChipID.CANONICAL)
+                new Chip(16, 3, ChipID.CANONICAL),
+                new Terminal(3, 5),
+                new Terminal(28, 5)
             ))
         )
     ),
@@ -372,6 +377,7 @@ public void setup() {
     stroke(DARK_ABG);
     strokeWeight(DEFAULT_STROKE);
     loadSprites();
+    frameRate(FRAME_RATE);
     mouseX = WIDTH / 2;
 }
 
@@ -482,6 +488,7 @@ public interface Collidable {
 public interface Interactable {
     public void drawSelf();
     public InteractCode interact(ArrayList<Mascot> mascots);
+    public boolean underMascot();
 }
 
 public void boldButton(String text, float x, float y, float width, float height) {
