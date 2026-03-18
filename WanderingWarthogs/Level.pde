@@ -6,6 +6,9 @@ public class Level extends Screen {
     private final float dotFrames = FRAME_RATE * dotBuffer;
     private final float hashtagBuffer = 0.1;
     private final float hashtagFrames = FRAME_RATE * hashtagBuffer;
+    private final int maxTerminals = 2;
+    private final int dots = 3, hashes = 20;
+
 
     private ScreenID id;
     // private String name; We will want to use this later for pause/death screen
@@ -127,7 +130,7 @@ public class Level extends Screen {
 
     public void progress(int terminals) {
         if(terminals == 1) {
-            dotAnimation = (dotAnimation + 1) % (4 * dotFrames); 
+            dotAnimation = (dotAnimation + 1) % ((dots + 1) * dotFrames); 
             hashtagAnimation = 0;
             fill(GRAY);
             float h = HEIGHT - BLOCK_SIZE; 
@@ -141,13 +144,13 @@ public class Level extends Screen {
                 ellipse(WIDTH / 2 + dotSize * 1.5, h, dotSize, dotSize);
             } 
         }
-        else if(terminals == 2) {
+        else if(terminals == maxTerminals) {
             dotAnimation = dotFrames;
-            hashtagAnimation = (hashtagAnimation + 1) % (21 * hashtagFrames); 
+            hashtagAnimation = (hashtagAnimation + 1) % ((hashes + 1) * hashtagFrames); 
 
             String progress = "";
             String fullProgress = "[";
-            for(int i = 1; i <= 20; i++) {
+            for(int i = 1; i <= hashes; i++) {
                 if(hashtagAnimation >= i * hashtagFrames) {
                     progress += "#";
                 }
