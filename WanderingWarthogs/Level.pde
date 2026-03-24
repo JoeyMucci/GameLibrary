@@ -1,5 +1,10 @@
 public class Level extends Screen {
     private final float pauseX = 10, pauseY = 25, pauseW = 150, pauseH = 50;
+    private final float bigPauseWidth = 1000, bigPauseHeight = 300;
+    private final float pauseButtonWidth = 2 * bigPauseWidth / 7, pauseGap = bigPauseWidth / 7, pauseButtonHeight = bigPauseHeight * 2 / 5;
+    private final float startWidth = (WIDTH - bigPauseWidth) / 2;
+    private final float pauseMenuX = startWidth + pauseGap, pauseResumeX = startWidth + 2 * pauseGap + pauseButtonWidth;
+    private final float smallPauseY = bigPauseHeight + LARGE_FONT_SIZE;
     private final float timerWidth = 50;
     private final float dotSize = 25;
     private final float dotBuffer = 0.75;
@@ -8,29 +13,29 @@ public class Level extends Screen {
     private final float hashtagFrames = FRAME_RATE * hashtagBuffer;
     private final int maxTerminals = 2;
     private final int dots = 3, hashes = 20;
-
-
     private ScreenID id;
-    // private String name; We will want to use this later for pause/death screen
+    private String name;
     private ArrayList<Mascot> mascots;
     private ArrayList<Mover> movers;
     private ArrayList<Collidable> collidables;
     private ArrayList<Interactable> interactables;
 
 
-    private float startTime;
-    private boolean started = false;
+    private float time = 0;
 
     private float dotAnimation = 0;
     private float hashtagAnimation = 0;
-    
+
+    private boolean paused;
+
     public Level(LevelInfo levelInfo) {
         id = levelInfo.id;
-        // name = levelInfo.name;
+        name = levelInfo.name;
         mascots = levelInfo.mascots;
         movers = new ArrayList<Mover>();
         collidables = levelInfo.collidables;
         interactables = levelInfo.interactables;
+        paused = false;
 
         // Add boundaries
         collidables.add(new BoundaryBlock(0, BLOCK_WIDTH, BLOCK_HEIGHT - 1, BLOCK_HEIGHT));
@@ -53,14 +58,38 @@ public class Level extends Screen {
     }
 
     public void drawSelf() {
-        if(!started) {
-            started = true;
-            startTime = millis();
-        }
         int terminals = 0;
 
         background(LIGHT_ABG);
 
+        if(paused) {
+            tint(MAX_OPACITY, MAX_OPACITY / 2);
+        }
+        else {
+            tint(MAX_OPACITY, MAX_OPACITY);
+        }
+
+        if(!paused) {
+            moveGame();
+            for(Interactable interactable : interactables) {
+                InteractCode intCode = interactable.interact(mascots);
+                if(intCode == InteractCode.TERMINAL) {
+                    terminals++;
+                }
+            }
+        }
+
+        drawGame();
+
+        if(paused) {
+            drawPause();
+        }
+
+        drawOverlay(terminals);
+    }
+
+    public void moveGame() {
+        time += 1.0 / FRAME_RATE;
         for(Mover mover : movers) {
             mover.moveSelf();
             for(Mover otherMover : movers) {
@@ -79,25 +108,23 @@ public class Level extends Screen {
                     (mover instanceof Human && otherMover instanceof Mascot) ||
                     // Mascot can land on a grounded mascot
                     (
-                        mover instanceof Mascot && otherMover instanceof Mascot && otherMover.isGrounded() && 
-                        mover.getTopLeft().y < otherMover.getTopLeft().y) 
-                ) { 
+                        mover instanceof Mascot && otherMover instanceof Mascot && otherMover.isGrounded() &&
+                        mover.getTopLeft().y < otherMover.getTopLeft().y
+                    )
+                ) {
                     ArrayList<Collidable> otherCollidable = new ArrayList<Collidable>(Arrays.asList(otherMover));
                     mover.collideY(otherCollidable);
                 }
             }
             mover.collideY(collidables);
         }
-        for(Interactable interactable : interactables) {
-            InteractCode intCode = interactable.interact(mascots);
-            if(intCode == InteractCode.TERMINAL) {
-                terminals++;
-            }
-        }
+    }
 
+    public void drawGame() {
         for(Collidable collidable : collidables) {
             collidable.drawSelf();
         }
+
         for(Interactable interactable : interactables) {
             if(interactable.underMascot()) {
                 interactable.drawSelf();
@@ -111,8 +138,18 @@ public class Level extends Screen {
                 interactable.drawSelf();
             }
         }
+    }
 
-        drawOverlay(terminals);
+    public void drawPause() {
+        fill(DARK_ABG);
+        stroke(GRAY);
+        rect(startWidth, (HEIGHT - bigPauseHeight) / 2, bigPauseWidth, bigPauseHeight);
+        setText(Size.MED, ORANGE);
+        centerText(name, 0, WIDTH, bigPauseHeight + MED_FONT_SIZE);
+        fill(GRAY);
+
+        boldButton("Back to Menu", pauseMenuX, smallPauseY, pauseButtonWidth, pauseButtonHeight);
+        boldButton("Resume", pauseResumeX, smallPauseY, pauseButtonWidth, pauseButtonHeight);
     }
 
     public void drawOverlay(int terminals) {
@@ -122,7 +159,7 @@ public class Level extends Screen {
     }
 
     public void timer() {
-        int seconds = (int) ((Math.floor(millis() - startTime) / MILLI));
+        int seconds = (int) (Math.floor(time));
         String secondsString = String.valueOf(seconds);
         setText(Size.MED, GRAY);
         centerText(secondsString, WIDTH - timerWidth * secondsString.length(), WIDTH, pauseY + pauseH);
@@ -130,10 +167,10 @@ public class Level extends Screen {
 
     public void progress(int terminals) {
         if(terminals == 1) {
-            dotAnimation = (dotAnimation + 1) % ((dots + 1) * dotFrames); 
+            dotAnimation = (dotAnimation + 1) % ((dots + 1) * dotFrames);
             hashtagAnimation = 0;
             fill(GRAY);
-            float h = HEIGHT - BLOCK_SIZE; 
+            float h = HEIGHT - BLOCK_SIZE;
             if(dotAnimation >= dotFrames) {
                 ellipse(WIDTH / 2 - dotSize * 1.5, h, dotSize, dotSize);
             }
@@ -142,11 +179,11 @@ public class Level extends Screen {
             }
             if(dotAnimation >= 3 * dotFrames) {
                 ellipse(WIDTH / 2 + dotSize * 1.5, h, dotSize, dotSize);
-            } 
+            }
         }
         else if(terminals == maxTerminals) {
             dotAnimation = dotFrames;
-            hashtagAnimation = (hashtagAnimation + 1) % ((hashes + 1) * hashtagFrames); 
+            hashtagAnimation = (hashtagAnimation + 1) % ((hashes + 1) * hashtagFrames);
 
             String progress = "";
             String fullProgress = "[";
@@ -174,8 +211,24 @@ public class Level extends Screen {
         }
     }
 
+    public void togglePause() {
+        paused = !paused;
+    }
+
     public ScreenID processClick() {
-        // TODO: will have to process pause functionality
+        if(mouseInRect(pauseX, pauseY, pauseW, pauseH)) {
+            togglePause();
+        }
+        if(paused) {
+            if(mouseInRect(pauseMenuX, smallPauseY, pauseButtonWidth, pauseButtonHeight)) {
+                resetScreens();
+                return ScreenID.LEVEL_SELECT;
+            }
+            else if(mouseInRect(pauseResumeX, smallPauseY, pauseButtonWidth, pauseButtonHeight)) {
+                togglePause();
+            }
+        }
+
         return id;
     }
 }

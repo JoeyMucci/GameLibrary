@@ -103,6 +103,7 @@ public class FileSelect extends Screen {
 
     public void drawSelf() {
         background(LIGHT_ABG);
+        tint(MAX_OPACITY, MAX_OPACITY);
         setText(Size.LARGE, ORANGE);
         centerText("Wandering Warthogs", LARGE_FONT_SIZE);
         setText(Size.SMALL, GRAY);
