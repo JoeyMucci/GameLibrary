@@ -119,6 +119,8 @@ public class Bug extends Mover implements Interactable {
         }
     }
 
+    public boolean underMascot() { return true;};
+
     // If comes into contact with mascot, notify hit
     public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {

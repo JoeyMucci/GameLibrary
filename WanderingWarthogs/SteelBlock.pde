@@ -16,6 +16,8 @@ public class SteelBlock extends Block implements Interactable {
         }
     }
 
+    public boolean underMascot() { return true;};
+
     // The resolute raccoon can stick to the bottom of steel blocks with magnet equipped
     public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {

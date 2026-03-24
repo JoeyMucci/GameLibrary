@@ -34,6 +34,8 @@ public class Door implements Collidable, Interactable {
         return mascot.hasItem(getKey());
     }
 
+    public boolean underMascot() { return true;};
+
     // The resolute raccoon can open doors if it has the matching key
     public InteractCode interact(ArrayList<Mascot> mascots) {
         for(Mascot mascot : mascots) {
