@@ -1,9 +1,14 @@
+enum PauseReason {
+    PAUSE, BUG, SPIKE, COMPLETE
+}
+
 public class Level extends Screen {
     private final float pauseX = 10, pauseY = 25, pauseW = 150, pauseH = 50;
     private final float bigPauseWidth = 1000, bigPauseHeight = 300;
     private final float pauseButtonWidth = 2 * bigPauseWidth / 7, pauseGap = bigPauseWidth / 7, pauseButtonHeight = bigPauseHeight * 2 / 5;
     private final float startWidth = (WIDTH - bigPauseWidth) / 2;
-    private final float pauseMenuX = startWidth + pauseGap, pauseResumeX = startWidth + 2 * pauseGap + pauseButtonWidth;
+    private final float pauseMenuX = startWidth + pauseGap, pauseContinueX = startWidth + 2 * pauseGap + pauseButtonWidth;
+    private final float pauseCompleteX = startWidth + (bigPauseWidth - pauseButtonWidth) / 2;
     private final float smallPauseY = bigPauseHeight + LARGE_FONT_SIZE;
     private final float timerWidth = 50;
     private final float dotSize = 25;
@@ -27,6 +32,7 @@ public class Level extends Screen {
     private float hashtagAnimation = 0;
 
     private boolean paused;
+    private PauseReason pauseReason = PauseReason.PAUSE;
 
     public Level(LevelInfo levelInfo) {
         id = levelInfo.id;
@@ -75,6 +81,15 @@ public class Level extends Screen {
                 InteractCode intCode = interactable.interact(mascots);
                 if(intCode == InteractCode.TERMINAL) {
                     terminals++;
+                }
+                else if(intCode == InteractCode.HIT) {
+                    if(interactable instanceof Bug) {
+                        pauseReason = PauseReason.BUG;
+                    }
+                    else if(interactable instanceof SpikeBlock) {
+                        pauseReason = PauseReason.SPIKE;
+                    }
+                    pause();
                 }
             }
         }
@@ -146,14 +161,44 @@ public class Level extends Screen {
         rect(startWidth, (HEIGHT - bigPauseHeight) / 2, bigPauseWidth, bigPauseHeight);
         setText(Size.MED, ORANGE);
         centerText(name, 0, WIDTH, bigPauseHeight + MED_FONT_SIZE);
-        fill(GRAY);
+        setText(Size.SMALL, GRAY);
 
-        boldButton("Back to Menu", pauseMenuX, smallPauseY, pauseButtonWidth, pauseButtonHeight);
-        boldButton("Resume", pauseResumeX, smallPauseY, pauseButtonWidth, pauseButtonHeight);
+        String subtitle = "";
+        switch(pauseReason) {
+            case PAUSE:
+                subtitle = "paused";
+                break;
+            case BUG:
+                subtitle = "slain by bug: segmentation fault (core dumped)";
+                break;
+            case SPIKE:
+                subtitle = "slain by spike: do more research next time";
+                break;
+            case COMPLETE:
+                subtitle = "complete";
+                break;
+            default:
+        }
+        centerText(subtitle, 0, WIDTH, bigPauseHeight + MED_FONT_SIZE + SMALL_FONT_SIZE);
+
+        if(pauseReason == PauseReason.COMPLETE) {
+            boldButton("Back to Menu", pauseCompleteX, smallPauseY, pauseButtonWidth, pauseButtonHeight);
+        }
+        else {
+            boldButton("Back to Menu", pauseMenuX, smallPauseY, pauseButtonWidth, pauseButtonHeight);
+            if(pauseReason == PauseReason.PAUSE) {
+                boldButton("Resume", pauseContinueX, smallPauseY, pauseButtonWidth, pauseButtonHeight);
+            }
+            else {
+                boldButton("Retry", pauseContinueX, smallPauseY, pauseButtonWidth, pauseButtonHeight);
+            }
+        }
     }
 
     public void drawOverlay(int terminals) {
-        boldButton("Pause (" + pauseKey + ")", pauseX, pauseY, pauseW, pauseH);
+        if(!paused) {
+            boldButton("Pause (" + pauseKey + ")", pauseX, pauseY, pauseW, pauseH);
+        }
         timer();
         progress(terminals);
     }
@@ -183,7 +228,7 @@ public class Level extends Screen {
         }
         else if(terminals == maxTerminals) {
             dotAnimation = dotFrames;
-            hashtagAnimation = (hashtagAnimation + 1) % ((hashes + 1) * hashtagFrames);
+            hashtagAnimation = (hashtagAnimation + 1);
 
             String progress = "";
             String fullProgress = "[";
@@ -204,6 +249,11 @@ public class Level extends Screen {
             text("[", startLoc, HEIGHT - BLOCK_SIZE / 2);
             text(progress, startLoc + textWidth("["), HEIGHT - BLOCK_SIZE / 2);
             text("]", startLoc + textWidth(fullProgress) - textWidth("]"), HEIGHT - BLOCK_SIZE / 2);
+
+            if(progress.charAt(progress.length() - 1) == '#') {
+                pauseReason = PauseReason.COMPLETE;
+                togglePause();
+            }
         }
         else {
             dotAnimation = dotFrames;
@@ -211,21 +261,46 @@ public class Level extends Screen {
         }
     }
 
+    public void pause() {
+        paused = true;
+    }
+    
+    public void unpause() {
+        paused = false;
+    }
+
     public void togglePause() {
-        paused = !paused;
+        if(paused) {
+            unpause();
+        }
+        else {
+            pause();
+        }
     }
 
     public ScreenID processClick() {
-        if(mouseInRect(pauseX, pauseY, pauseW, pauseH)) {
-            togglePause();
+        if(!paused && mouseInRect(pauseX, pauseY, pauseW, pauseH)) {
+            pauseReason = PauseReason.PAUSE;
+            pause();
         }
         if(paused) {
-            if(mouseInRect(pauseMenuX, smallPauseY, pauseButtonWidth, pauseButtonHeight)) {
-                resetScreens();
-                return ScreenID.LEVEL_SELECT;
+            if(pauseReason == PauseReason.COMPLETE) {
+                if(mouseInRect(pauseCompleteX, smallPauseY, pauseButtonWidth, pauseButtonHeight)) {
+                    resetScreens();
+                    return ScreenID.LEVEL_SELECT;
+                }
             }
-            else if(mouseInRect(pauseResumeX, smallPauseY, pauseButtonWidth, pauseButtonHeight)) {
-                togglePause();
+            else {
+                if(mouseInRect(pauseMenuX, smallPauseY, pauseButtonWidth, pauseButtonHeight)) {
+                    resetScreens();
+                    return ScreenID.LEVEL_SELECT;
+                }
+                else if(mouseInRect(pauseContinueX, smallPauseY, pauseButtonWidth, pauseButtonHeight)) {
+                    if(pauseReason != PauseReason.PAUSE) {
+                        resetScreens();
+                    }
+                    unpause();
+                }
             }
         }
 
