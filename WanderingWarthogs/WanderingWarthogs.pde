@@ -320,7 +320,9 @@ public void resetScreens() {
                     new Trash(14, 15, ItemID.MAGNET),
                     new Chip(29, 4, ChipID.QUESTING),
                     new Chip(26.5, 11, ChipID.RESOLUTE),
-                    new Chip(3, 14, ChipID.CANONICAL)
+                    new Chip(3, 14, ChipID.CANONICAL),
+                    new Terminal(7, 3),
+                    new Terminal(11, 3)
                 ))
             )
         ),
@@ -376,7 +378,9 @@ public void resetScreens() {
                     new Trash(15, 15, ItemID.REDKEY),
                     new Chip(8, 13, ChipID.QUESTING),
                     new Chip(21, 9.5, ChipID.RESOLUTE),
-                    new Chip(28.5, 3, ChipID.CANONICAL)
+                    new Chip(28.5, 3, ChipID.CANONICAL),
+                    new Terminal(2, 5),
+                    new Terminal(2, 15)
                 ))
             )
         ),
@@ -430,7 +434,9 @@ public void resetScreens() {
                     new Trash(29, 5, ItemID.BOOTS),
                     new Chip(26, 9, ChipID.QUESTING),
                     new Chip(3, 4, ChipID.RESOLUTE),
-                    new Chip(16, 11, ChipID.CANONICAL)
+                    new Chip(16, 11, ChipID.CANONICAL),
+                    new Terminal(8, 10),
+                    new Terminal(23, 10)
                 ))
             )
         )

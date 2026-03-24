@@ -198,9 +198,10 @@ public class Level extends Screen {
     public void drawOverlay(int terminals) {
         if(!paused) {
             boldButton("Pause (" + pauseKey + ")", pauseX, pauseY, pauseW, pauseH);
+            progress(terminals);
         }
         timer();
-        progress(terminals);
+        
     }
 
     public void timer() {
