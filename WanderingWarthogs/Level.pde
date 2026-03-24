@@ -270,7 +270,7 @@ public class Level extends Screen {
     }
 
     public void togglePause() {
-        if(paused) {
+        if(paused && pauseReason == PauseReason.PAUSE) {
             unpause();
         }
         else {
