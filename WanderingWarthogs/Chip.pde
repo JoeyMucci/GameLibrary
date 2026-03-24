@@ -1,5 +1,5 @@
 public class Chip implements Interactable {
-    private final float CONTACT_BUFFER = 10, MOVE_THRESHOLD = .1;
+    private final float CONTACT_BUFFER = 10, MOVE_THRESHOLD = .01;
     private final float SPEED = 15;
     private ChipID id;
     private Coordinate location;
@@ -56,12 +56,12 @@ public class Chip implements Interactable {
         float yDist = Math.abs(yLoc - location.y);
 
         if(Math.abs(xDist + yDist) < MOVE_THRESHOLD) {
-            acquired = false;
+            return;
         }
 
         // xMov^2 + yMov^2 = SPEED^2
         // xMov/yMov = xDist/yDist
-        float speed = Math.min(SPEED, (float) Math.sqrt((float) Math.pow(xDist, 2) + (float) Math.pow(yDist, 2) + MOVE_THRESHOLD));
+        float speed = Math.min(SPEED, (float) Math.sqrt((float) Math.pow(xDist, 2) + (float) Math.pow(yDist, 2)));
         float ratio = Math.abs(xDist/yDist);
         float yMov = (float) Math.sqrt((float) Math.pow(speed, 2) / (1 + (float) Math.pow(ratio, 2)));
         float xMov = ratio * yMov; 
