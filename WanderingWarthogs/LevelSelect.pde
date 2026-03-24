@@ -45,6 +45,7 @@ public class LevelSelect extends Screen {
 
     private void levelSlot(String name, float x, float y) {
         // Draw thicker outline on highlighted level slots
+        stroke(DARK_ABG);
         if(mouseInRect(x, y, SLOT_SIZE, SLOT_SIZE)) {
             strokeWeight(THICK_STROKE);
         }

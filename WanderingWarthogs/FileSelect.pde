@@ -134,6 +134,7 @@ public class FileSelect extends Screen {
 
     private void fileSlot(int fileNo, float x, float y) {
         // Draw thicker outline on highlighted file slots
+        stroke(DARK_ABG);
         if(mouseInRect(x, y, SLOT_SIZE, SLOT_SIZE)) {
             strokeWeight(THICK_STROKE);
         }

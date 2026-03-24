@@ -319,7 +319,7 @@ public void resetScreens() {
                     new Human(26, 6, Direction.LEFT),
                     new Trash(14, 15, ItemID.MAGNET),
                     new Chip(29, 4, ChipID.QUESTING),
-                    new Chip(26, 11, ChipID.RESOLUTE),
+                    new Chip(26.5, 11, ChipID.RESOLUTE),
                     new Chip(3, 14, ChipID.CANONICAL)
                 ))
             )
@@ -513,6 +513,7 @@ public interface Interactable {
 
 public void boldButton(String text, float x, float y, float width, float height) {
     strokeWeight(DEFAULT_STROKE);
+    stroke(DARK_ABG);
     fill(GRAY);
     rect(x, y, width, height);
     // Draw lighter text if highlighted
