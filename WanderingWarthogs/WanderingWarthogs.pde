@@ -1,7 +1,13 @@
 // Imports
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Scanner;
 import static java.util.Map.entry; 
 
 // Constants
@@ -11,15 +17,21 @@ public final int BLOCK_WIDTH = WIDTH / BLOCK_SIZE - 1, BLOCK_HEIGHT = HEIGHT / B
 public final int LARGE_FONT_SIZE = 128, MED_FONT_SIZE = 64, SMALL_FONT_SIZE = 32;
 public final int DEFAULT_STROKE = 2, THICK_STROKE = 8;
 public final int FRAME_RATE = 60;
-private final int MAX_OPACITY = 255;
+public final int OCTAL_MAX = 255;
+public final int NUM_LEVELS = 5;
+public final int NUM_FILES = 3;
+public final int NOT_A_FILE = -1;
+public final int NOT_CLEARED = -1;
 
-private final char pauseKey = 'P';
+public final char pauseKey = 'P';
+public final String COMMA_DELIMITER = ",";
 
 public final color ORANGE = #E95420, LIGHT_ABG = #77216F, MID_ABG = #5E2750, DARK_ABG = #2C001E, GRAY = #AEA79F;
 
 public final String MAIN_DIR = "WanderingWarthogs/";
 public final String FONTS_DIR = MAIN_DIR + "fonts/";
 public final String SPRITES_DIR = MAIN_DIR + "sprites/";
+public final String FILES_DIR = MAIN_DIR + "files/";
 
 public final float CONTACT_THRESHOLD = 0.01;
 public final float GRAVITY = 1.0 / 3.0;
@@ -44,7 +56,7 @@ enum ChipID {
 }
 
 enum InteractCode {
-    OK, HIT, TERMINAL
+    OK, HIT, TERMINAL, GET
 }
 
 enum Direction {
@@ -59,6 +71,14 @@ enum Align {
     START, MID, END
 }
 
+
+public final Map<ScreenID, Integer> levelIndices = Map.ofEntries(
+    entry(ScreenID.TTS, 0),
+    entry(ScreenID.DC, 1),
+    entry(ScreenID.ALAP, 2),
+    entry(ScreenID.TFT, 3),
+    entry(ScreenID.TTC, 4)
+);
 public final Map<MoverID, String> moverNames = Map.ofEntries(
     entry(MoverID.QUOKKA, "quokka"),
     entry(MoverID.RACCOON, "raccoon"),
@@ -87,6 +107,7 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
     entry("questing-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2)),
     entry("resolute-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2)),
     entry("canonical-chip.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2)),
+    entry("clock.png", new SpriteInfo(null, BLOCK_SIZE * 2, BLOCK_SIZE * 2)),
     entry("human-left.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
     entry("human-left-action.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
     entry("human-right.png", new SpriteInfo(null, BLOCK_SIZE, BLOCK_SIZE * 3)),
@@ -115,7 +136,8 @@ public final Map<String, SpriteInfo> sprites = Map.ofEntries(
 );
 
 // Game
-public ScreenID currentScreen = ScreenID.TTS;
+public int fileNum = -1;
+public ScreenID currentScreen = ScreenID.FILE_SELECT;
 public Map<Integer, Boolean> keyMap = new HashMap<>();
 public Map<ScreenID, LevelInfo> levels;
 public Map<ScreenID, Screen> screens;
@@ -129,7 +151,9 @@ public void setup() {
     strokeWeight(DEFAULT_STROKE);
     loadSprites();
     frameRate(FRAME_RATE);
-    resetScreens();
+    screens = Map.ofEntries(
+        entry(ScreenID.FILE_SELECT, new FileSelect())
+    );
     mouseX = WIDTH / 2;
 }
 
@@ -190,7 +214,73 @@ public void loadSprites() {
     }
 }
 
+public void reloadFileSelect() {
+    screens = Map.ofEntries(
+        entry(ScreenID.FILE_SELECT, new FileSelect())
+    );
+}
+
+public SaveData[] loadFile(int fileNum) {
+    SaveData[] data = new SaveData[NUM_LEVELS];
+
+    String path = FILES_DIR + fileNum + ".csv";
+    try (Scanner rowScanner = new Scanner(new File(path))) {
+        for(int i = 0; i < NUM_LEVELS; i++) {
+            String line = rowScanner.nextLine();
+            String[] vals = line.split(COMMA_DELIMITER);
+            data[i] = new SaveData(
+                Boolean.parseBoolean(vals[0]),
+                Boolean.parseBoolean(vals[1]),
+                Boolean.parseBoolean(vals[2]),
+                Integer.parseInt(vals[3])
+            );
+        }
+    }
+    catch (FileNotFoundException e) {
+        return null;
+    }
+
+    return data;
+}
+
+public void setFile(int fileNo) {
+    fileNum = fileNo;
+    String path = FILES_DIR + fileNo + ".csv";
+    File saveFile = new File(path);
+    if(!saveFile.exists()) {
+        try{
+            saveFile.createNewFile();
+            try(BufferedWriter bw = new BufferedWriter(new FileWriter(saveFile))) {
+                bw.write(
+                    "false,false,false,-1\n" +
+                    "false,false,false,-1\n" +
+                    "false,false,false,-1\n" +
+                    "false,false,false,-1\n" +
+                    "false,false,false,-1\n"
+                );
+            }
+        }
+        catch (IOException e) {
+            System.out.println("Could not create save file: " + path);
+            System.exit(1);
+        } 
+    }
+}
+
+public void deleteFile(int fileNo) {
+    String path = FILES_DIR + fileNo + ".csv";
+    File saveFile = new File(path);
+    try {
+        Files.deleteIfExists(saveFile.toPath());
+    }
+    catch (IOException e) {
+        System.out.println("Could not delete save file: " + path);
+        System.exit(2);
+    }
+}
+
 public void resetScreens() {
+    SaveData[] data = loadFile(fileNum);
     levels = Map.ofEntries(
         entry(
             ScreenID.TTS,
@@ -232,7 +322,8 @@ public void resetScreens() {
                     new Chip(16, 3, ChipID.CANONICAL),
                     new Terminal(3, 5),
                     new Terminal(28, 5)
-                ))
+                )),
+                data[levelIndices.get(ScreenID.TTS)]
             )
         ),
         entry(
@@ -272,7 +363,8 @@ public void resetScreens() {
                     new Chip(3.5, 3, ChipID.CANONICAL),
                     new Terminal(11, 5),
                     new Terminal(20, 5)
-                ))
+                )),
+                data[levelIndices.get(ScreenID.DC)]
             )
         ),
         entry(
@@ -323,7 +415,8 @@ public void resetScreens() {
                     new Chip(3, 14, ChipID.CANONICAL),
                     new Terminal(7, 3),
                     new Terminal(11, 3)
-                ))
+                )),
+                data[levelIndices.get(ScreenID.ALAP)]
             )
         ),
         entry(
@@ -381,7 +474,8 @@ public void resetScreens() {
                     new Chip(28.5, 3, ChipID.CANONICAL),
                     new Terminal(2, 5),
                     new Terminal(2, 15)
-                ))
+                )),
+                data[levelIndices.get(ScreenID.TFT)]
             )
         ),
         entry(
@@ -437,7 +531,8 @@ public void resetScreens() {
                     new Chip(16, 11, ChipID.CANONICAL),
                     new Terminal(8, 10),
                     new Terminal(23, 10)
-                ))
+                )),
+                data[levelIndices.get(ScreenID.TTC)]
             )
         )
     );
@@ -479,18 +574,38 @@ public class LevelInfo {
     public ArrayList<Mascot> mascots;
     public ArrayList<Collidable> collidables;
     public ArrayList<Interactable> interactables;
+    public SaveData data;
 
     public LevelInfo(
         ScreenID id, String name,
         ArrayList<Mascot> mascots,
         ArrayList<Collidable> collidables,
-        ArrayList<Interactable> interactables
+        ArrayList<Interactable> interactables,
+        SaveData data
     ) {
         this.id = id;
         this.name = name;
         this.mascots = mascots;
         this.collidables = collidables;
         this.interactables = interactables;
+        this.data = data;
+    }
+}
+
+public class SaveData {
+    public boolean questingGet, resoluteGet, canonicalGet;
+    public int clearTime;
+
+    public SaveData(
+        boolean questingGet,
+        boolean resoluteGet,
+        boolean canonicalGet,
+        int clearTime
+    ) {
+        this.questingGet = questingGet;
+        this.resoluteGet = resoluteGet;
+        this.canonicalGet = canonicalGet;
+        this.clearTime = clearTime;
     }
 }
 
@@ -518,8 +633,8 @@ public interface Interactable {
 }
 
 public void boldButton(String text, float x, float y, float width, float height) {
-    strokeWeight(DEFAULT_STROKE);
     stroke(DARK_ABG);
+    strokeWeight(DEFAULT_STROKE);
     fill(GRAY);
     rect(x, y, width, height);
     // Draw lighter text if highlighted

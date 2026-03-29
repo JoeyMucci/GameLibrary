@@ -16,6 +16,7 @@ public class Level extends Screen {
     private final float dotFrames = FRAME_RATE * dotBuffer;
     private final float hashtagBuffer = 0.1;
     private final float hashtagFrames = FRAME_RATE * hashtagBuffer;
+    public final int MAX_SECONDS = 999;
     private final int maxTerminals = 2;
     private final int dots = 3, hashes = 20;
     private ScreenID id;
@@ -25,6 +26,10 @@ public class Level extends Screen {
     private ArrayList<Collidable> collidables;
     private ArrayList<Interactable> interactables;
 
+    private boolean hasQuesting;
+    private boolean hasResolute;
+    private boolean hasCanonical;
+    private int clearTime;
 
     private float time = 0;
 
@@ -41,6 +46,10 @@ public class Level extends Screen {
         movers = new ArrayList<Mover>();
         collidables = levelInfo.collidables;
         interactables = levelInfo.interactables;
+        hasQuesting = levelInfo.data.questingGet;
+        hasResolute = levelInfo.data.resoluteGet;
+        hasCanonical = levelInfo.data.canonicalGet;
+        clearTime = levelInfo.data.clearTime;
         paused = false;
 
         // Add boundaries
@@ -60,6 +69,17 @@ public class Level extends Screen {
             else if(interactables.get(i) instanceof Collidable) {
                 collidables.add((Collidable) interactables.get(i));
             }
+
+            if(interactables.get(i) instanceof Chip) {
+                Chip ch = (Chip) interactables.get(i);
+                if(
+                    hasQuesting && ch.getID() == ChipID.QUESTING ||
+                    hasResolute && ch.getID() == ChipID.RESOLUTE ||
+                    hasCanonical && ch.getID() == ChipID.CANONICAL
+                ) {
+                    ch.setAlreadyGot();
+                }
+            }
         }
     }
 
@@ -68,18 +88,22 @@ public class Level extends Screen {
 
         background(LIGHT_ABG);
 
-        if(paused) {
-            tint(MAX_OPACITY, MAX_OPACITY / 2);
-        }
-        else {
-            tint(MAX_OPACITY, MAX_OPACITY);
-        }
-
         if(!paused) {
             moveGame();
             for(Interactable interactable : interactables) {
                 InteractCode intCode = interactable.interact(mascots);
-                if(intCode == InteractCode.TERMINAL) {
+                if(intCode == InteractCode.GET) {
+                    if(((Chip) interactable).getID() == ChipID.QUESTING) {
+                        hasQuesting = true;
+                    }
+                    else if(((Chip) interactable).getID() == ChipID.RESOLUTE) {
+                        hasResolute = true;
+                    }
+                    else if(((Chip) interactable).getID() == ChipID.CANONICAL) {
+                        hasCanonical = true;
+                    }
+                }
+                else if(intCode == InteractCode.TERMINAL) {
                     terminals++;
                 }
                 else if(intCode == InteractCode.HIT) {
@@ -137,19 +161,43 @@ public class Level extends Screen {
 
     public void drawGame() {
         for(Collidable collidable : collidables) {
+            if(paused) {
+                tint(OCTAL_MAX, OCTAL_MAX / 2);
+            }
+            else {
+                tint(OCTAL_MAX, OCTAL_MAX);
+            }
             collidable.drawSelf();
         }
 
         for(Interactable interactable : interactables) {
             if(interactable.underMascot()) {
+                if(paused) {
+                    tint(OCTAL_MAX, OCTAL_MAX / 2);
+                }
+                else {
+                    tint(OCTAL_MAX, OCTAL_MAX);
+                }
                 interactable.drawSelf();
             }
         }
         for(Mover mover : movers) {
+            if(paused) {
+                tint(OCTAL_MAX, OCTAL_MAX / 2);
+            }
+            else {
+                tint(OCTAL_MAX, OCTAL_MAX);
+            }
             mover.drawSelf();
         }
         for(Interactable interactable : interactables) {
             if(!interactable.underMascot()) {
+                if(paused) {
+                    tint(OCTAL_MAX, OCTAL_MAX / 2);
+                }
+                else {
+                    tint(OCTAL_MAX, OCTAL_MAX);
+                }
                 interactable.drawSelf();
             }
         }
@@ -158,6 +206,7 @@ public class Level extends Screen {
     public void drawPause() {
         fill(DARK_ABG);
         stroke(GRAY);
+        strokeWeight(DEFAULT_STROKE);
         rect(startWidth, (HEIGHT - bigPauseHeight) / 2, bigPauseWidth, bigPauseHeight);
         setText(Size.MED, ORANGE);
         centerText(name, 0, WIDTH, bigPauseHeight + MED_FONT_SIZE);
@@ -201,14 +250,27 @@ public class Level extends Screen {
             progress(terminals);
         }
         timer();
-        
     }
 
-    public void timer() {
+    public int getTime() {
         int seconds = (int) (Math.floor(time));
-        String secondsString = String.valueOf(seconds);
+        seconds = Math.min(seconds, MAX_SECONDS);
+        return seconds;
+    }
+ 
+    public void timer() {
+        int seconds = getTime();
+        String secondsPrefix = "";
+        if(seconds < 100) {
+            secondsPrefix += "0";
+        }
+        if(seconds < 10) {
+            secondsPrefix += "0";
+        }
+        String secondsString = secondsPrefix + seconds;
         setText(Size.MED, GRAY);
         centerText(secondsString, WIDTH - timerWidth * secondsString.length(), WIDTH, pauseY + pauseH);
+        image(sprites.get("clock.png").image, WIDTH - textWidth(secondsString) - sprites.get("clock.png").width * 1.25, 0);
     }
 
     public void progress(int terminals) {
@@ -287,6 +349,7 @@ public class Level extends Screen {
         if(paused) {
             if(pauseReason == PauseReason.COMPLETE) {
                 if(mouseInRect(pauseCompleteX, smallPauseY, pauseButtonWidth, pauseButtonHeight)) {
+                    writeProgress();
                     resetScreens();
                     return ScreenID.LEVEL_SELECT;
                 }
@@ -306,5 +369,47 @@ public class Level extends Screen {
         }
 
         return id;
+    }
+
+    public void writeProgress() {
+        String newContent = "";
+        int index = levelIndices.get(id);
+
+        String path = FILES_DIR + fileNum + ".csv";
+        File file = new File(path);
+        try (Scanner rowScanner = new Scanner(file)) {
+            for(int i = 0; i < NUM_LEVELS; i++) {
+                String line = rowScanner.nextLine();
+                if(i != index) {
+                    newContent += line + "\n";
+                    continue;
+                }
+
+                int time = getTime();
+                if(clearTime != NOT_CLEARED && clearTime < getTime()) {
+                    time = clearTime;
+                }
+
+                String newLine = 
+                    hasQuesting + "," +
+                    hasResolute + "," +
+                    hasCanonical + "," +
+                    time;
+                
+                newContent += newLine + "\n";
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("Could not read save file: " + path);
+            System.exit(3);
+        }
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            bw.write(newContent);
+        }
+        catch (IOException e) {
+            System.out.println("Could not write to save file: " + path);
+            System.exit(4);
+        } 
     }
 }

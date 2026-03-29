@@ -8,6 +8,7 @@ public class Chip implements Interactable {
     private float xLoc, yLoc;
 
     private boolean acquired;
+    private boolean alreadyGot;
 
     // It is useful to have chips at half heights
     public Chip(float rightBlock, float bottomBlock, ChipID id) {
@@ -25,6 +26,7 @@ public class Chip implements Interactable {
         }
         yLoc = 0;
         acquired = false;
+        alreadyGot = false;
         float leftX = (rightBlock + 1) * BLOCK_SIZE - sprites.get(spriteName).width;
         float topY = (bottomBlock + 1) * BLOCK_SIZE - sprites.get(spriteName).height;
         location = new Coordinate(leftX, topY);
@@ -37,12 +39,28 @@ public class Chip implements Interactable {
             moveSelf();
         }
         outline();
+
+        if(alreadyGot) {
+            tint(OCTAL_MAX, OCTAL_MAX / 2);
+        }
+
         image(sprites.get(spriteName).image, location.x, location.y);
+
+        tint(OCTAL_MAX, OCTAL_MAX);
+
+        if(alreadyGot) {
+            image(sprites.get(spriteName).image, xLoc, yLoc);
+        }
+    }
+
+    public void setAlreadyGot() {
+        alreadyGot = true;
     }
 
     public void outline() {
         noFill();
         stroke(GRAY);
+        strokeWeight(DEFAULT_STROKE);
         rect(
             xLoc + CONTACT_BUFFER,
             yLoc + CONTACT_BUFFER,
@@ -56,6 +74,7 @@ public class Chip implements Interactable {
         float yDist = Math.abs(yLoc - location.y);
 
         if(Math.abs(xDist + yDist) < MOVE_THRESHOLD) {
+            alreadyGot = true;
             return;
         }
 
@@ -80,6 +99,10 @@ public class Chip implements Interactable {
         }
     }
 
+    public ChipID getID() {
+        return id;
+    }
+    
     public float getLeftX() {
         return location.x + CONTACT_BUFFER;
     }
@@ -108,6 +131,7 @@ public class Chip implements Interactable {
             ) {
                 if(mascot.isTouching(this)) {
                     acquired = true;
+                    return InteractCode.GET;
                 }
             }
         }
