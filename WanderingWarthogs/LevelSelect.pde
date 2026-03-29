@@ -1,5 +1,4 @@
 public class LevelSelect extends Screen {
-    private final int NUM_LEVELS = 5;
     private final int TOP_LEVELS = (NUM_LEVELS + 1) / 2, BOTTOM_LEVELS = NUM_LEVELS / 2;
     private final float SLOT_SIZE = 320;
     private final float TOP_GAP = (WIDTH - TOP_LEVELS * SLOT_SIZE) / (TOP_LEVELS + 1);

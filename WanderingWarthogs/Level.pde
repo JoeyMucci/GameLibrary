@@ -16,6 +16,7 @@ public class Level extends Screen {
     private final float dotFrames = FRAME_RATE * dotBuffer;
     private final float hashtagBuffer = 0.1;
     private final float hashtagFrames = FRAME_RATE * hashtagBuffer;
+    public final int MAX_SECONDS = 999;
     private final int maxTerminals = 2;
     private final int dots = 3, hashes = 20;
     private ScreenID id;
@@ -25,6 +26,9 @@ public class Level extends Screen {
     private ArrayList<Collidable> collidables;
     private ArrayList<Interactable> interactables;
 
+    private boolean hasQuesting = false;
+    private boolean hasResolute = false;
+    private boolean hasCanonical = false;
 
     private float time = 0;
 
@@ -79,7 +83,18 @@ public class Level extends Screen {
             moveGame();
             for(Interactable interactable : interactables) {
                 InteractCode intCode = interactable.interact(mascots);
-                if(intCode == InteractCode.TERMINAL) {
+                if(intCode == InteractCode.GET) {
+                    if(((Chip) interactable).getID() == ChipID.QUESTING) {
+                        hasQuesting = true;
+                    }
+                    else if(((Chip) interactable).getID() == ChipID.RESOLUTE) {
+                        hasResolute = true;
+                    }
+                    else if(((Chip) interactable).getID() == ChipID.CANONICAL) {
+                        hasCanonical = true;
+                    }
+                }
+                else if(intCode == InteractCode.TERMINAL) {
                     terminals++;
                 }
                 else if(intCode == InteractCode.HIT) {
@@ -204,8 +219,14 @@ public class Level extends Screen {
         
     }
 
-    public void timer() {
+    public int getTime() {
         int seconds = (int) (Math.floor(time));
+        seconds = Math.min(seconds, MAX_SECONDS);
+        return seconds;
+    }
+ 
+    public void timer() {
+        int seconds = getTime();
         String secondsString = String.valueOf(seconds);
         setText(Size.MED, GRAY);
         centerText(secondsString, WIDTH - timerWidth * secondsString.length(), WIDTH, pauseY + pauseH);
@@ -287,6 +308,7 @@ public class Level extends Screen {
         if(paused) {
             if(pauseReason == PauseReason.COMPLETE) {
                 if(mouseInRect(pauseCompleteX, smallPauseY, pauseButtonWidth, pauseButtonHeight)) {
+                    writeProgress();
                     resetScreens();
                     return ScreenID.LEVEL_SELECT;
                 }
@@ -306,5 +328,42 @@ public class Level extends Screen {
         }
 
         return id;
+    }
+
+    public void writeProgress() {
+        String newContent = "";
+        int index = levelIndices.get(id);
+
+        String path = FILES_DIR + fileNum + ".csv";
+        File file = new File(path);
+        try (Scanner rowScanner = new Scanner(file)) {
+            for(int i = 0; i < NUM_LEVELS; i++) {
+                String line = rowScanner.nextLine();
+                if(i != index) {
+                    newContent += line + "\n";
+                    continue;
+                }
+
+                String newLine = 
+                    hasQuesting + "," +
+                    hasResolute + "," +
+                    hasCanonical + "," +
+                    getTime();
+                
+                newContent += newLine + "\n";
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("Could not read save file: " + path);
+            System.exit(3);
+        }
+
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            bw.write(newContent);
+        }
+        catch (IOException e) {
+            System.out.println("Could not write to save file: " + path);
+            System.exit(4);
+        } 
     }
 }

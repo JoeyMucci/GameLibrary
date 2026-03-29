@@ -80,6 +80,10 @@ public class Chip implements Interactable {
         }
     }
 
+    public ChipID getID() {
+        return id;
+    }
+    
     public float getLeftX() {
         return location.x + CONTACT_BUFFER;
     }
@@ -108,6 +112,7 @@ public class Chip implements Interactable {
             ) {
                 if(mascot.isTouching(this)) {
                     acquired = true;
+                    return InteractCode.GET;
                 }
             }
         }
