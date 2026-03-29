@@ -17,7 +17,7 @@ public final int BLOCK_WIDTH = WIDTH / BLOCK_SIZE - 1, BLOCK_HEIGHT = HEIGHT / B
 public final int LARGE_FONT_SIZE = 128, MED_FONT_SIZE = 64, SMALL_FONT_SIZE = 32;
 public final int DEFAULT_STROKE = 2, THICK_STROKE = 8;
 public final int FRAME_RATE = 60;
-public final int MAX_OPACITY = 255;
+public final int OCTAL_MAX = 255;
 public final int NUM_LEVELS = 5;
 public final int NUM_FILES = 3;
 public final int NOT_A_FILE = -1;
@@ -323,7 +323,7 @@ public void resetScreens() {
                     new Terminal(3, 5),
                     new Terminal(28, 5)
                 )),
-                data[levelIndices.get(ScreenID.TTC)]
+                data[levelIndices.get(ScreenID.TTS)]
             )
         ),
         entry(
@@ -633,8 +633,8 @@ public interface Interactable {
 }
 
 public void boldButton(String text, float x, float y, float width, float height) {
-    strokeWeight(DEFAULT_STROKE);
     stroke(DARK_ABG);
+    strokeWeight(DEFAULT_STROKE);
     fill(GRAY);
     rect(x, y, width, height);
     // Draw lighter text if highlighted

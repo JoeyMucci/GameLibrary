@@ -1,4 +1,10 @@
 public class FileSelect extends Screen {
+    private final float confirmWidth = 1000, confirmHeight = 300;
+    private final float confirmButtonWidth = 2 * confirmWidth / 7, pauseGap = confirmWidth / 7, confirmButtonHeight = confirmHeight * 2 / 5;
+    private final float startWidth = (WIDTH - confirmWidth) / 2;
+    private final float confirmNoX = startWidth + pauseGap, confirmYesX = startWidth + 2 * pauseGap + confirmButtonWidth;
+    private final float confirmY = confirmHeight + LARGE_FONT_SIZE;
+
     private final float SLOT_SIZE = 400;
     private final float X_SIZE = 50;
     private final float X_BUFFER = 10;
@@ -55,6 +61,9 @@ public class FileSelect extends Screen {
     private final String HELP_SUBTITLE = "Hover over a sprite for tips on how to play";
     private String subtitle = HELP_SUBTITLE;
 
+    private int fileDeletion = -1;
+    private boolean confirmModal = false;
+
     public FileSelect() {
         assignSlots();
         assignSprites();
@@ -103,8 +112,14 @@ public class FileSelect extends Screen {
     }
 
     public void drawSelf() {
+        if(confirmModal) {
+            tint(OCTAL_MAX, OCTAL_MAX / 2);
+        }
+        else {
+            tint(OCTAL_MAX, OCTAL_MAX);
+        }
         background(LIGHT_ABG);
-        tint(MAX_OPACITY, MAX_OPACITY);
+
         setText(Size.LARGE, ORANGE);
         centerText("Wandering Warthogs", LARGE_FONT_SIZE);
         setText(Size.SMALL, GRAY);
@@ -121,8 +136,10 @@ public class FileSelect extends Screen {
                 sprites.get(SPRITE_INFO[i].spriteName).width,
                 sprites.get(SPRITE_INFO[i].spriteName).height
             )) {
-                hovering = true;
-                subtitle = SPRITE_INFO[i].description;
+                if(!confirmModal) {
+                    hovering = true;
+                    subtitle = SPRITE_INFO[i].description;
+                }
             }
 
             if(!hovering) {
@@ -131,12 +148,17 @@ public class FileSelect extends Screen {
             
             image(sprites.get(SPRITE_INFO[i].spriteName).image, spriteLocs[i].x, spriteLocs[i].y);
         }
+
+        if(confirmModal) {
+            drawConfirm();
+        }
     }
 
     private void fileSlot(int fileNo, float x, float y) {
         // Draw thicker outline on highlighted file slots
         stroke(DARK_ABG);
         if(
+            !confirmModal &&
             mouseInRect(x, y, SLOT_SIZE, SLOT_SIZE) &&
             !mouseInRect(x + SLOT_SIZE - X_SIZE - X_BUFFER, y + X_BUFFER, X_SIZE, X_SIZE)
         ) {
@@ -235,12 +257,34 @@ public class FileSelect extends Screen {
         }
     }
 
+    public void drawConfirm() {
+        fill(DARK_ABG);
+        stroke(GRAY);
+        strokeWeight(DEFAULT_STROKE);
+        rect(startWidth, (HEIGHT - confirmHeight) / 2, confirmWidth, confirmHeight);
+        setText(Size.MED, ORANGE);
+        centerText("Confirm File " + fileDeletion + " Deletion?", 0, WIDTH, confirmHeight + MED_FONT_SIZE);
+        boldButton("No", confirmNoX, confirmY, confirmButtonWidth, confirmButtonHeight);
+        boldButton("Yes", confirmYesX, confirmY, confirmButtonWidth, confirmButtonHeight);
+    }
+
     public ScreenID processClick() {
+        if(confirmModal) {
+            if(mouseInRect(confirmNoX, confirmY, confirmButtonWidth, confirmButtonHeight)) {
+                confirmModal = false;
+            }
+            else if(mouseInRect(confirmYesX, confirmY, confirmButtonWidth, confirmButtonHeight)) {
+                deleteFile(fileDeletion);
+                reloadFileSelect();
+                confirmModal = false;
+            }
+            return ScreenID.FILE_SELECT;
+        }
         for(int i = 0; i < NUM_FILES; i++) {
             if(mouseInRect(slotLocs[i].x, slotLocs[i].y, SLOT_SIZE, SLOT_SIZE)) {
                 if(mouseInRect(slotLocs[i].x + SLOT_SIZE - X_SIZE - X_BUFFER, slotLocs[i].y + X_BUFFER, X_SIZE, X_SIZE)) {
-                    deleteFile(i + 1);
-                    reloadFileSelect();
+                    fileDeletion = i + 1;
+                    confirmModal = true;
                     return ScreenID.FILE_SELECT;
                 }
                 else {

@@ -26,9 +26,10 @@ public class Level extends Screen {
     private ArrayList<Collidable> collidables;
     private ArrayList<Interactable> interactables;
 
-    private boolean hasQuesting = false;
-    private boolean hasResolute = false;
-    private boolean hasCanonical = false;
+    private boolean hasQuesting;
+    private boolean hasResolute;
+    private boolean hasCanonical;
+    private int clearTime;
 
     private float time = 0;
 
@@ -45,6 +46,10 @@ public class Level extends Screen {
         movers = new ArrayList<Mover>();
         collidables = levelInfo.collidables;
         interactables = levelInfo.interactables;
+        hasQuesting = levelInfo.data.questingGet;
+        hasResolute = levelInfo.data.resoluteGet;
+        hasCanonical = levelInfo.data.canonicalGet;
+        clearTime = levelInfo.data.clearTime;
         paused = false;
 
         // Add boundaries
@@ -64,6 +69,17 @@ public class Level extends Screen {
             else if(interactables.get(i) instanceof Collidable) {
                 collidables.add((Collidable) interactables.get(i));
             }
+
+            if(interactables.get(i) instanceof Chip) {
+                Chip ch = (Chip) interactables.get(i);
+                if(
+                    hasQuesting && ch.getID() == ChipID.QUESTING ||
+                    hasResolute && ch.getID() == ChipID.RESOLUTE ||
+                    hasCanonical && ch.getID() == ChipID.CANONICAL
+                ) {
+                    ch.setAlreadyGot();
+                }
+            }
         }
     }
 
@@ -71,13 +87,6 @@ public class Level extends Screen {
         int terminals = 0;
 
         background(LIGHT_ABG);
-
-        if(paused) {
-            tint(MAX_OPACITY, MAX_OPACITY / 2);
-        }
-        else {
-            tint(MAX_OPACITY, MAX_OPACITY);
-        }
 
         if(!paused) {
             moveGame();
@@ -152,19 +161,43 @@ public class Level extends Screen {
 
     public void drawGame() {
         for(Collidable collidable : collidables) {
+            if(paused) {
+                tint(OCTAL_MAX, OCTAL_MAX / 2);
+            }
+            else {
+                tint(OCTAL_MAX, OCTAL_MAX);
+            }
             collidable.drawSelf();
         }
 
         for(Interactable interactable : interactables) {
             if(interactable.underMascot()) {
+                if(paused) {
+                    tint(OCTAL_MAX, OCTAL_MAX / 2);
+                }
+                else {
+                    tint(OCTAL_MAX, OCTAL_MAX);
+                }
                 interactable.drawSelf();
             }
         }
         for(Mover mover : movers) {
+            if(paused) {
+                tint(OCTAL_MAX, OCTAL_MAX / 2);
+            }
+            else {
+                tint(OCTAL_MAX, OCTAL_MAX);
+            }
             mover.drawSelf();
         }
         for(Interactable interactable : interactables) {
             if(!interactable.underMascot()) {
+                if(paused) {
+                    tint(OCTAL_MAX, OCTAL_MAX / 2);
+                }
+                else {
+                    tint(OCTAL_MAX, OCTAL_MAX);
+                }
                 interactable.drawSelf();
             }
         }
@@ -173,6 +206,7 @@ public class Level extends Screen {
     public void drawPause() {
         fill(DARK_ABG);
         stroke(GRAY);
+        strokeWeight(DEFAULT_STROKE);
         rect(startWidth, (HEIGHT - bigPauseHeight) / 2, bigPauseWidth, bigPauseHeight);
         setText(Size.MED, ORANGE);
         centerText(name, 0, WIDTH, bigPauseHeight + MED_FONT_SIZE);
@@ -216,7 +250,6 @@ public class Level extends Screen {
             progress(terminals);
         }
         timer();
-        
     }
 
     public int getTime() {
@@ -227,9 +260,17 @@ public class Level extends Screen {
  
     public void timer() {
         int seconds = getTime();
-        String secondsString = String.valueOf(seconds);
+        String secondsPrefix = "";
+        if(seconds < 100) {
+            secondsPrefix += "0";
+        }
+        if(seconds < 10) {
+            secondsPrefix += "0";
+        }
+        String secondsString = secondsPrefix + seconds;
         setText(Size.MED, GRAY);
         centerText(secondsString, WIDTH - timerWidth * secondsString.length(), WIDTH, pauseY + pauseH);
+        image(sprites.get("clock.png").image, WIDTH - textWidth(secondsString) - sprites.get("clock.png").width * 1.25, 0);
     }
 
     public void progress(int terminals) {
@@ -344,11 +385,16 @@ public class Level extends Screen {
                     continue;
                 }
 
+                int time = getTime();
+                if(clearTime != NOT_CLEARED && clearTime < getTime()) {
+                    time = clearTime;
+                }
+
                 String newLine = 
                     hasQuesting + "," +
                     hasResolute + "," +
                     hasCanonical + "," +
-                    getTime();
+                    time;
                 
                 newContent += newLine + "\n";
             }
