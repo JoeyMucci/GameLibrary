@@ -7,7 +7,7 @@ else
     echo "To launch a game directly run \"$0 <game>\""
     echo "--- Menu ---"
     PS3="Choose Game: "
-    games=("CaptainToadTowerClimb" "UNO" "RainbowRush" "FoxForest")
+    games=("CaptainToadTowerClimb" "UNO" "RainbowRush" "FoxForest" "WanderingWarthogs")
     select game in ${games[@]}; do
         processing cli --sketch="$game" --run
         break
