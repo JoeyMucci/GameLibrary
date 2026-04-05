@@ -28,7 +28,7 @@ public final String COMMA_DELIMITER = ",";
 
 public final color ORANGE = #E95420, LIGHT_ABG = #77216F, MID_ABG = #5E2750, DARK_ABG = #2C001E, GRAY = #AEA79F;
 
-public final String MAIN_DIR = "WanderingWarthogs/";
+public final String MAIN_DIR = System.getenv("MAIN_DIR");
 public final String FONTS_DIR = MAIN_DIR + "fonts/";
 public final String SPRITES_DIR = MAIN_DIR + "sprites/";
 public final String FILES_DIR = MAIN_DIR + "files/";
